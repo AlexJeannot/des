@@ -15,16 +15,73 @@ void tobinary(char *pt, char *bin_pt, int bytes_size)
     int count = 0;
     for (int bytes = 0; bytes < bytes_size; bytes++)
     {
-        printf("bytes = %d\n", bytes);
+        // printf("bytes = %d\n", bytes);
         for (int bits = 7; bits >= 0; bits--)
         {
-            printf("((pt[bytes] >> bits) & 0b00000001) = %d\n", ((pt[bytes] >> bits) & 0b00000001));
+            // printf("((pt[bytes] >> bits) & 0b00000001) = %d\n", ((pt[bytes] >> bits) & 0b00000001));
             if (((pt[bytes] >> bits) & 0b00000001) == 0)
                 bin_pt[count] = '0';
             else if (((pt[bytes] >> bits) & 0b00000001) == 1)
                 bin_pt[count] = '1';
             count++;
         }
+    }
+    printf("COUNT TO BINARY = %d\n", count);
+}
+
+void hex2bin(char *key, char *binkey)
+{
+
+	// mp['0'] = "0000";
+	// mp['1'] = "0001";
+	// mp['2'] = "0010";
+	// mp['3'] = "0011";
+	// mp['4'] = "0100";
+	// mp['5'] = "0101";
+	// mp['6'] = "0110";
+	// mp['7'] = "0111";
+	// mp['8'] = "1000";
+	// mp['9'] = "1001";
+	// mp['A'] = "1010";
+	// mp['B'] = "1011";
+	// mp['C'] = "1100";
+	// mp['D'] = "1101";
+	// mp['E'] = "1110";
+	// mp['F'] = "1111";
+
+    int size = strlen(key);
+    for (int count = 0; count < size; count++)
+    {
+        switch(key[count])
+        {
+            case '0':   strcat(&binkey[0], "0000"); break;
+            case '1':   strcat(&binkey[0], "0001"); break;
+            case '2':   strcat(&binkey[0], "0010"); break;
+            case '3':   strcat(&binkey[0], "0011"); break;
+            case '4':   strcat(&binkey[0], "0100"); break;
+            case '5':   strcat(&binkey[0], "0101"); break;
+            case '6':   strcat(&binkey[0], "0110"); break;
+            case '7':   strcat(&binkey[0], "0111"); break;
+            case '8':   strcat(&binkey[0], "1000"); break;
+            case '9':   strcat(&binkey[0], "1001"); break;
+            case 'A':   strcat(&binkey[0], "1010"); break;
+            case 'B':   strcat(&binkey[0], "1011"); break;
+            case 'C':   strcat(&binkey[0], "1100"); break;
+            case 'D':   strcat(&binkey[0], "1101"); break;
+            case 'E':   strcat(&binkey[0], "1110"); break;
+            case 'F':   strcat(&binkey[0], "1111"); break;
+        }
+    }
+}
+
+void xor_bits(char *pt_a, char *pt_b, char *result, int size)
+{
+    for (int count = 0; count < size; count++)
+    {
+        if (pt_a[count] == pt_b[count])
+            result[count] = '0';
+        else
+            result[count] = '1';
     }
 }
 
@@ -90,12 +147,19 @@ void set_round_key(char *key, char *round_key, int round)
         strncpy(&tmp_key_b[26], &key[28], 2);
     }
 
+    print_binary_str(&tmp_key_a[0], "AFTER LEFT: ", 28);
+    print_binary_str(&tmp_key_b[0], "AFTER RIGHT: ", 28);
+
     strncpy(&tmp_key[0], &tmp_key_a[0], 28);
     strncpy(&tmp_key[28], &tmp_key_b[0], 28);
+
+
+    print_binary_str(&tmp_key[0], "combine: ", 56);
 
     strncpy(&key[0], &tmp_key[0], 56);
 
     permute(&tmp_key[0], &round_key[0], &key_comp[0], 48);
+    print_binary_str(&round_key[0], "roundKey: ", 48);
 }
 
 int main(int argc, char **argv)
@@ -127,21 +191,42 @@ int main(int argc, char **argv)
     print_binary_str(per_bin_pt, "per_bin_pt", 64);
 
     // ------------------------------------ KEYS -----------------------------------
-    char *key = "12345678";
+    char *key = "AABBCCDDEEFF1122";
     char bin_key[64];
     bzero(&bin_key[0], 64);
-    tobinary(key, &bin_key[0], 8);
+
+
+
+
+    hex2bin(key, &bin_key[0]);
     print_binary_str(bin_key, "bin_key", 64);
+
+
+
+
+
 
     char trunc_bin_key[56];
     bzero(&trunc_bin_key[0], 56);
 
-    int count2 = 0;
-    for (int count = 1; count <= 64; count++)
-    {
-        if (count % 8 != 0)
-            trunc_bin_key[count2++] = bin_key[count - 1];
-    }
+    // int count2 = 0;
+    // for (int count = 1; count <= 64; count++)
+    // {
+    //     if (count % 8 != 0)
+    //         trunc_bin_key[count2++] = bin_key[count - 1];
+    // }
+
+    int keyp[56] = { 57, 49, 41, 33, 25, 17, 9,
+                1, 58, 50, 42, 34, 26, 18,
+                10, 2, 59, 51, 43, 35, 27,
+                19, 11, 3, 60, 52, 44, 36,
+                63, 55, 47, 39, 31, 23, 15,
+                7, 62, 54, 46, 38, 30, 22,
+                14, 6, 61, 53, 45, 37, 29,
+                21, 13, 5, 28, 20, 12, 4 };
+
+    permute(&bin_key[0], &trunc_bin_key[0], &keyp[0], 56);
+
     print_binary_str(trunc_bin_key, "trunc_bin_key", 56);
 
     char round_key[48]; 
@@ -150,12 +235,15 @@ int main(int argc, char **argv)
 
     for (int round = 1; round <= 16; round++)
     {
-
+        printf("------------------- ROUND %d ----------------------\n", round);
+        // print_binary_str(trunc_bin_key, "round trunc_bin_key", 56);
         set_round_key(trunc_bin_key, round_key, round);
         strncpy(&all_round_keys[round - 1][0], round_key, 48);
         print_binary_str(round_key, "round_key", 48);
+        printf("\n");
 
     }
+    printf("--------------------------------------------------\n");
 
     // ------------------------------------ END KEYS -----------------------------------
 
@@ -181,7 +269,7 @@ int main(int argc, char **argv)
     for (int round = 0; round < 16; round++)
     {
 
-            // --------------- EXPANSION PERMUTATION 
+        // --------------- EXPANSION PERMUTATION 
 
         bzero(&exp_pt[0], 48);
         int exp_d[48] = { 32, 1, 2, 3, 4, 5, 4, 5,
@@ -193,6 +281,16 @@ int main(int argc, char **argv)
 
         permute(&pt_b[0], &exp_pt[0], &exp_d[0], 48);
         print_binary_str(exp_pt, "exp_pt", 48);
+
+
+
+        // ------------------------- XOR
+
+        char xor_result[48];
+        bzero(&xor_result[0], 48);
+
+        xor_bits(&exp_pt[0], &all_round_keys[round][0], &xor_result[0], 48);
+
 
 
         // --------------- S BOXES
@@ -243,35 +341,35 @@ int main(int argc, char **argv)
 
         for (int count = 0; count < 8; count++)
         {
-            if (exp_pt[count * 6] == '0')
+            if (xor_result[count * 6] == '0')
             {
-                if (exp_pt[(count * 6) + 5] == '0')
+                if (xor_result[(count * 6) + 5] == '0')
                     x = 0;
                 else
                     x = 1;
             }
             else
             {
-                if (exp_pt[(count * 6) + 5] == '0')
+                if (xor_result[(count * 6) + 5] == '0')
                     x = 3;
                 else
                     x = 4;
             }
 
-            if (exp_pt[(count * 6) + 1] == '0')
+            if (xor_result[(count * 6) + 1] == '0')
             {
-                if (exp_pt[(count * 6) + 2] == '0')
+                if (xor_result[(count * 6) + 2] == '0')
                 {
-                    if (exp_pt[(count * 6) + 3] == '0')
+                    if (xor_result[(count * 6) + 3] == '0')
                     {
-                        if (exp_pt[(count * 6) + 4] == '0')
+                        if (xor_result[(count * 6) + 4] == '0')
                             y = 0;
                         else
                             y = 1;
                     }
                     else
                     {
-                        if (exp_pt[(count * 6) + 4] == '0')
+                        if (xor_result[(count * 6) + 4] == '0')
                             y = 2;
                         else
                             y = 3;
@@ -279,16 +377,16 @@ int main(int argc, char **argv)
                 }
                 else
                 {
-                    if (exp_pt[(count * 6) + 3] == '0')
+                    if (xor_result[(count * 6) + 3] == '0')
                     {
-                        if (exp_pt[(count * 6) + 4] == '0')
+                        if (xor_result[(count * 6) + 4] == '0')
                             y = 4;
                         else
                             y = 5;
                     }
                     else
                     {
-                        if (exp_pt[(count * 6) + 4] == '0')
+                        if (xor_result[(count * 6) + 4] == '0')
                             y = 6;
                         else
                             y = 7;
@@ -297,18 +395,18 @@ int main(int argc, char **argv)
             }
             else
             {
-                if (exp_pt[(count * 6) + 2] == '0')
+                if (xor_result[(count * 6) + 2] == '0')
                 {
-                    if (exp_pt[(count * 6) + 3] == '0')
+                    if (xor_result[(count * 6) + 3] == '0')
                     {
-                        if (exp_pt[(count * 6) + 4] == '0')
+                        if (xor_result[(count * 6) + 4] == '0')
                             y = 8;
                         else
                             y = 9;
                     }
                     else
                     {
-                        if (exp_pt[(count * 6) + 4] == '0')
+                        if (xor_result[(count * 6) + 4] == '0')
                             y = 10;
                         else
                             y = 11;
@@ -316,16 +414,16 @@ int main(int argc, char **argv)
                 }
                 else
                 {
-                    if (exp_pt[(count * 6) + 3] == '0')
+                    if (xor_result[(count * 6) + 3] == '0')
                     {
-                        if (exp_pt[(count * 6) + 4] == '0')
+                        if (xor_result[(count * 6) + 4] == '0')
                             y = 12;
                         else
                             y = 13;
                     }
                     else
                     {
-                        if (exp_pt[(count * 6) + 4] == '0')
+                        if (xor_result[(count * 6) + 4] == '0')
                             y = 14;
                         else
                             y = 15;
@@ -360,8 +458,76 @@ int main(int argc, char **argv)
         permute(&s_boxes_result[0], &p_box_result[0], &per[0], 32);
 
         print_binary_str(&p_box_result[0], "p_box_result", 32);
+
+        // ------------------------- XOR
+
+        char xor_result_second[48];
+        bzero(&xor_result_second[0], 48);
+
+        xor_bits(&p_box_result[0], &pt_a[0], &xor_result_second[0], 32);
+
+
+        char tmp[32];
+        bzero(&tmp[0], 32);
+
+        if (round != 15)
+        {
+            strncpy(&tmp[0], &xor_result_second[0], 32);
+            strncpy(&pt_a[0], &pt_b[0], 32);
+            strncpy(&pt_b[0], &xor_result_second[0], 32);
+        }
     }
 
+    print_binary_str(&pt_a[0], "pt_a", 32);
+    print_binary_str(&pt_b[0], "pt_b", 32);
+
+    char final_result[64];
+    bzero(&final_result[0], 64);
+
+    strncpy(&final_result[0], &pt_a[0], 32);
+    strncpy(&final_result[32], &pt_b[0], 32);
+
+    int final_perm[64] = { 40, 8, 48, 16, 56, 24, 64, 32,
+                           39, 7, 47, 15, 55, 23, 63, 31,
+                           38, 6, 46, 14, 54, 22, 62, 30,
+                           37, 5, 45, 13, 53, 21, 61, 29,
+                           36, 4, 44, 12, 52, 20, 60, 28,
+                           35, 3, 43, 11, 51, 19, 59, 27,
+                           34, 2, 42, 10, 50, 18, 58, 26,
+                           33, 1, 41, 9, 49, 17, 57, 25 };
 
 
+    char final_permutation[64];
+    bzero(&final_permutation[0], 64);
+
+    permute(&final_result[0], &final_permutation[0], &final_perm[0], 64);
+
+    print_binary_str(&final_permutation[0], "final_permutation", 64);
+    
+    char res[9];
+    bzero(&res[0], 9);
+
+    int final_counter = 0;
+
+    for (int bytes = 0; bytes < 8; bytes++)
+    {
+        for (int bits = 0; bits < 8; bits++)
+        {
+            // printf("final_permutation[final_counter]- 48 = %d\n", final_permutation[final_counter] - 48);
+            res[bytes] = res[bytes] | (final_permutation[final_counter] - 48);
+            // printf("res[bytes] = %c\n", res[bytes]);
+            if (bits != 7)
+                res[bytes] = res[bytes] << 1;
+            final_counter++;
+        }
+    }
+
+    write(1, "\0", 1);
+    printf("res =\n");
+    write(1, res, 8);
+    printf("\n");
+    for (int count = 0; count < 8; count++)
+    {
+        printf("res[%d] = %d  ---- %c\n", count, (int8_t)res[count], res[count]);
+    }
 }
