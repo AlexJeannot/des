@@ -2,11 +2,21 @@
 
 // char *
 
+
+void print_binary_str(char *str, char *type, int size)
+{
+    printf("%s = ", type);
+    fflush(stdout);
+    write(1, str, size);
+    printf("\n");
+}
+
+
 void permute(char *bin, char *per_bin, int *array, int size)
 {
 	for (int count = 0; count < size; count++)
     {
-		per_bin[count] += bin[array[count] - 1];
+		per_bin[count] = bin[array[count] - 1];
 	}
 }
 
@@ -97,14 +107,8 @@ void sboxes_tobinary(int result, char *bin_pt)
             bin_pt[count] = '1';
         count++;
     }
-}
-
-void print_binary_str(char *str, char *type, int size)
-{
-    printf("%s = ", type);
-    fflush(stdout);
-    write(1, str, size);
-    printf("\n");
+    printf("sboxes int = %d\n", result);
+    print_binary_str(&bin_pt[0], "sboxes bin", 4);
 }
 
 int is_one_shift_round(int round)
@@ -172,6 +176,9 @@ int main(int argc, char **argv)
 
     char *pt = "ABCDEFGH";
     tobinary(pt, &bin_pt[0], 8);
+    // char *pt = "123456ABCD132536";
+    // hex2bin(pt, &bin_pt[0]);
+
 
     print_binary_str(bin_pt, "bin_pt", 64);
 
@@ -192,6 +199,7 @@ int main(int argc, char **argv)
 
     // ------------------------------------ KEYS -----------------------------------
     char *key = "AABBCCDDEEFF1122";
+    // char *key = "133457799BBCDFF1";
     char bin_key[64];
     bzero(&bin_key[0], 64);
 
@@ -265,10 +273,12 @@ int main(int argc, char **argv)
     print_binary_str(pt_b, "pt_b", 32);
 
     char exp_pt[48];
+    char xor_result_second[48];
 
     for (int round = 0; round < 16; round++)
     {
-
+        
+        printf("\n----------------------------- ROUND %d ---------------------------------\n", round + 1);
         // --------------- EXPANSION PERMUTATION 
 
         bzero(&exp_pt[0], 48);
@@ -290,7 +300,9 @@ int main(int argc, char **argv)
         bzero(&xor_result[0], 48);
 
         xor_bits(&exp_pt[0], &all_round_keys[round][0], &xor_result[0], 48);
-
+        
+        print_binary_str(&all_round_keys[round][0], "all_round_keys", 48);
+        print_binary_str(&xor_result[0], "xor_result", 48);
 
 
         // --------------- S BOXES
@@ -351,9 +363,9 @@ int main(int argc, char **argv)
             else
             {
                 if (xor_result[(count * 6) + 5] == '0')
-                    x = 3;
+                    x = 2;
                 else
-                    x = 4;
+                    x = 3;
             }
 
             if (xor_result[(count * 6) + 1] == '0')
@@ -431,6 +443,7 @@ int main(int argc, char **argv)
                 }
             }
 
+            printf("x = %d --- y = %d\n", x, y);
             // printf("s_boxes[count][(16 * x) + y] = %d\n", s_boxes[count][(16 * x) + y]);
             sboxes_tobinary(s_boxes[count][(16 * x) + y], &s_boxes_result[count * 4]);
             // print_binary_str(&s_boxes_result[0], "s_boxes_result", 32);
@@ -438,6 +451,7 @@ int main(int argc, char **argv)
 
 
         }
+        print_binary_str(&s_boxes_result[0], "s_boxes_result", 32);
 
         // --------------- STRAIGHT PERMUTATION
 
@@ -461,7 +475,7 @@ int main(int argc, char **argv)
 
         // ------------------------- XOR
 
-        char xor_result_second[48];
+
         bzero(&xor_result_second[0], 48);
 
         xor_bits(&p_box_result[0], &pt_a[0], &xor_result_second[0], 32);
@@ -472,6 +486,7 @@ int main(int argc, char **argv)
 
         if (round != 15)
         {
+            printf("SWAP!\n");
             strncpy(&tmp[0], &xor_result_second[0], 32);
             strncpy(&pt_a[0], &pt_b[0], 32);
             strncpy(&pt_b[0], &xor_result_second[0], 32);
@@ -484,7 +499,7 @@ int main(int argc, char **argv)
     char final_result[64];
     bzero(&final_result[0], 64);
 
-    strncpy(&final_result[0], &pt_a[0], 32);
+    strncpy(&final_result[0], &xor_result_second[0], 32);
     strncpy(&final_result[32], &pt_b[0], 32);
 
     int final_perm[64] = { 40, 8, 48, 16, 56, 24, 64, 32,
