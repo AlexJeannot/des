@@ -39,7 +39,7 @@ void tobinary(char *pt, char *bin_pt, int bytes_size)
     printf("COUNT TO BINARY = %d\n", count);
 }
 
-void hex2bin(char *key, char *binkey)
+void hexadecimal_to_binary(char *key, char *binkey)
 {
 
 	// mp['0'] = "0000";
@@ -116,56 +116,6 @@ int is_one_shift_round(int round)
     return (round == 1 || round == 2 || round == 9 || round == 16);
 }
 
-void set_round_key(char *key, char *round_key, int round)
-{
-    int key_comp[48] = { 14, 17, 11, 24, 1, 5,
-                         3, 28, 15, 6, 21, 10,
-                         23, 19, 12, 4, 26, 8,
-                         16, 7, 27, 20, 13, 2,
-                         41, 52, 31, 37, 47, 55,
-                         30, 40, 51, 45, 33, 48,
-                         44, 49, 39, 56, 34, 53,
-                         46, 42, 50, 36, 29, 32 };
-
-    char tmp_key[56];
-    char tmp_key_a[28];
-    char tmp_key_b[28];
-
-    bzero(&tmp_key[0], 56);
-    bzero(&round_key[0], 48);
-
-    if (is_one_shift_round(round))
-    {
-        strncpy(&tmp_key_a[0], &key[1], 27);
-        strncpy(&tmp_key_a[27], &key[0], 1);
-
-        strncpy(&tmp_key_b[0], &key[29], 27);
-        strncpy(&tmp_key_b[27], &key[28], 1);
-    }
-    else
-    {
-        strncpy(&tmp_key_a[0], &key[2], 26);
-        strncpy(&tmp_key_a[26], &key[0], 2);
-
-        strncpy(&tmp_key_b[0], &key[30], 26);
-        strncpy(&tmp_key_b[26], &key[28], 2);
-    }
-
-    print_binary_str(&tmp_key_a[0], "AFTER LEFT: ", 28);
-    print_binary_str(&tmp_key_b[0], "AFTER RIGHT: ", 28);
-
-    strncpy(&tmp_key[0], &tmp_key_a[0], 28);
-    strncpy(&tmp_key[28], &tmp_key_b[0], 28);
-
-
-    print_binary_str(&tmp_key[0], "combine: ", 56);
-
-    strncpy(&key[0], &tmp_key[0], 56);
-
-    permute(&tmp_key[0], &round_key[0], &key_comp[0], 48);
-    print_binary_str(&round_key[0], "roundKey: ", 48);
-}
-
 int main(int argc, char **argv)
 {
     (void)argc;
@@ -200,58 +150,29 @@ int main(int argc, char **argv)
     // ------------------------------------ KEYS -----------------------------------
     char *key = "AABBCCDDEEFF1122";
     // char *key = "133457799BBCDFF1";
-    char bin_key[64];
-    bzero(&bin_key[0], 64);
 
+    t_keys keys;
 
+    bzero(&keys, sizeof(t_keys));
+    keys.origin_key = key;
 
+    create_all_round_keys(&keys);
 
-    hex2bin(key, &bin_key[0]);
-    print_binary_str(bin_key, "bin_key", 64);
+    // char round_key[48]; 
 
+    // char all_round_keys[16][48];
 
-
-
-
-
-    char trunc_bin_key[56];
-    bzero(&trunc_bin_key[0], 56);
-
-    // int count2 = 0;
-    // for (int count = 1; count <= 64; count++)
+    // for (int round = 1; round <= 16; round++)
     // {
-    //     if (count % 8 != 0)
-    //         trunc_bin_key[count2++] = bin_key[count - 1];
+    //     printf("------------------- ROUND %d ----------------------\n", round);
+    //     // print_binary_str(trunc_bin_key, "round trunc_bin_key", 56);
+    //     set_round_key(trunc_bin_key, round_key, round);
+    //     strncpy(&all_round_keys[round - 1][0], round_key, 48);
+    //     print_binary_str(round_key, "round_key", 48);
+    //     printf("\n");
+
     // }
-
-    int keyp[56] = { 57, 49, 41, 33, 25, 17, 9,
-                1, 58, 50, 42, 34, 26, 18,
-                10, 2, 59, 51, 43, 35, 27,
-                19, 11, 3, 60, 52, 44, 36,
-                63, 55, 47, 39, 31, 23, 15,
-                7, 62, 54, 46, 38, 30, 22,
-                14, 6, 61, 53, 45, 37, 29,
-                21, 13, 5, 28, 20, 12, 4 };
-
-    permute(&bin_key[0], &trunc_bin_key[0], &keyp[0], 56);
-
-    print_binary_str(trunc_bin_key, "trunc_bin_key", 56);
-
-    char round_key[48]; 
-
-    char all_round_keys[16][48];
-
-    for (int round = 1; round <= 16; round++)
-    {
-        printf("------------------- ROUND %d ----------------------\n", round);
-        // print_binary_str(trunc_bin_key, "round trunc_bin_key", 56);
-        set_round_key(trunc_bin_key, round_key, round);
-        strncpy(&all_round_keys[round - 1][0], round_key, 48);
-        print_binary_str(round_key, "round_key", 48);
-        printf("\n");
-
-    }
-    printf("--------------------------------------------------\n");
+    // printf("--------------------------------------------------\n");
 
     // ------------------------------------ END KEYS -----------------------------------
 
@@ -299,10 +220,10 @@ int main(int argc, char **argv)
         char xor_result[48];
         bzero(&xor_result[0], 48);
 
-        xor_bits(&exp_pt[0], &all_round_keys[round][0], &xor_result[0], 48);
+        xor_bits(&exp_pt[0], &keys.round_keys[round][0], &xor_result[0], 48);
         
-        print_binary_str(&all_round_keys[round][0], "all_round_keys", 48);
-        print_binary_str(&xor_result[0], "xor_result", 48);
+        // print_binary_str(&all_round_keys[round][0], "all_round_keys", 48);
+        // print_binary_str(&xor_result[0], "xor_result", 48);
 
 
         // --------------- S BOXES

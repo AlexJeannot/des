@@ -16,7 +16,7 @@ DOBJS		= ./comp/
 
 
 # SOURCES
-SRCS 		=	des.c
+SRCS 		=	des.c key.c
 
 
 # OBJS
