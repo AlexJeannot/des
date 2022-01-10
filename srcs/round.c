@@ -1,13 +1,5 @@
 #include "../incs/des.h"
 
-
-// void expansion_permutation(char *right, char *expanded_right)
-// {
-
-
-//     permute(right, expanded_right, &expansion_permutation[0], 48);
-// }
-
 void s_box(char *xored, char *s_boxed)
 {
     u_int8_t x;
@@ -55,8 +47,6 @@ void swap_blocks(char *left, char *right, char *p_boxed, u_int8_t round)
 void execute_round(t_block *block, t_keys *keys, u_int8_t round)
 {
     permute(block->right, block->expanded, &expansion_permutation[0], 48);
-
-    // expansion_permutation(block->right, block->expanded);
     xor_bits_string(block->expanded, keys->round_keys[round], block->xored, 48);
     s_box(block->xored, block->s_boxed);
     permute(block->s_boxed, block->p_boxed, &p_box[0], 32);

@@ -8,6 +8,9 @@
 # include <strings.h>
 # include <string.h>
 
+# define ENCRYPTION 0
+# define DECRYPTION 1
+
 typedef struct  s_keys
 {
     char *origin_key;
@@ -34,7 +37,7 @@ typedef struct  s_data
 }               t_data;
 
 
-void create_all_round_keys(t_keys *keys);
+void create_all_round_keys(t_keys *keys, u_int8_t type);
 void execute_round(t_block *block, t_keys *keys, u_int8_t round);
 
 
@@ -50,8 +53,6 @@ void xor_bits_string(char *first, char *second, char *output, u_int64_t size);
 void hexadecimal_to_binary(char *key, char *binkey);
 void sboxes_tobinary(int result, char *bin_pt);
 // void permute(char *bin, char *per_bin, const int *array, int size);
-
-int is_one_shift_round(u_int8_t round);
 
 
 extern const u_int8_t expansion_permutation[48];

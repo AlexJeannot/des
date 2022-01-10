@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    char *pt = "ABCDEFGH";
+    char pt[8] = "ABCDEFGH";
     char *key = "AABBCCDDEEFF1122";
     char test[8];
 
@@ -56,13 +56,37 @@ int main(int argc, char **argv)
     data.input = pt;
     data.output = test;
 
-    create_all_round_keys(&keys);
+    create_all_round_keys(&keys, ENCRYPTION);
     for (u_int64_t block_index = 0; block_index < 1; block_index++)
     {
         prepare_rounds(&block, data.input);
         for (u_int8_t round = 0; round < 16; round++)
             execute_round(&block, &keys, round);
-        increment_output(&block, data.output);
+        increment_output(&block, &data.output[block_index * 8]);
+    }
+
+    printf("res =\n");
+    write(1, data.output, 8);
+    printf("\n");
+
+
+    memcpy(&pt[0], &data.output[0], 8);
+    key = "AABBCCDDEEFF1122";
+    bzero(&data, sizeof(t_data));
+    bzero(&keys, sizeof(t_keys));
+    bzero(test, 8);
+    bzero(&keys, sizeof(t_keys));
+    keys.origin_key = key;
+    data.input = pt;
+    data.output = test;
+
+    create_all_round_keys(&keys, DECRYPTION);
+    for (u_int64_t block_index = 0; block_index < 1; block_index++)
+    {
+        prepare_rounds(&block, data.input);
+        for (u_int8_t round = 0; round < 16; round++)
+            execute_round(&block, &keys, round);
+        increment_output(&block, &data.output[block_index * 8]);
     }
 
     printf("res =\n");

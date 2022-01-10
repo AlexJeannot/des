@@ -7,7 +7,7 @@ u_int8_t shift_number(int round)
     return (2);
 }
 
-void set_round_keys(t_keys *keys, char *input_key)
+void set_round_keys(t_keys *keys, char *input_key, u_int8_t type)
 {
 
     char shifted_key[56];
@@ -27,19 +27,16 @@ void set_round_keys(t_keys *keys, char *input_key)
         strncpy(&shifted_key[56 - shift], &input_key[28], shift);
 
         permute(&shifted_key[0], &round_key[0], &key_compression[0], 48);
-        strncpy(&keys->round_keys[round][0], &round_key[0], 48);
+        if (type == ENCRYPTION)
+            strncpy(&keys->round_keys[round][0], &round_key[0], 48);
+        else
+            strncpy(&keys->round_keys[15 - round][0], &round_key[0], 48);
+
         strncpy(&input_key[0], &shifted_key[0], 56);
     }
 }
 
-void truncate_key(char *key, char *truncated_key)
-{
-
-    
-    permute(&key[0], &truncated_key[0], &key_permutation[0], 56);
-}
-
-void create_all_round_keys(t_keys *keys)
+void create_all_round_keys(t_keys *keys, u_int8_t type)
 {
     char binary_key[64];
     char truncated_binary_key[56];
@@ -48,7 +45,6 @@ void create_all_round_keys(t_keys *keys)
     bzero(&truncated_binary_key[0], 56);
 
     get_hex_binary(keys->origin_key, &binary_key[0]);
-    // truncate_key(&binary_key[0], &truncated_binary_key[0]);
     permute(&binary_key[0], &truncated_binary_key[0], &key_permutation[0], 56);
-    set_round_keys(keys, &truncated_binary_key[0]);
+    set_round_keys(keys, &truncated_binary_key[0], type);
 }
