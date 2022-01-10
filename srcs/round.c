@@ -1,17 +1,12 @@
 #include "../incs/des.h"
 
 
-void expansion_permutation(char *right, char *expanded_right)
-{
-    int exp_perm[48] = {   32, 1, 2, 3, 4, 5, 4, 5,
-                        6, 7, 8, 9, 8, 9, 10, 11,
-                        12, 13, 12, 13, 14, 15, 16, 17,
-                        16, 17, 18, 19, 20, 21, 20, 21,
-                        22, 23, 24, 25, 24, 25, 26, 27,
-                        28, 29, 28, 29, 30, 31, 32, 1 };
+// void expansion_permutation(char *right, char *expanded_right)
+// {
 
-    permute(right, expanded_right, &exp_perm[0], 48);
-}
+
+//     permute(right, expanded_right, &expansion_permutation[0], 48);
+// }
 
 void s_box(char *xored, char *s_boxed)
 {
@@ -37,7 +32,7 @@ void s_box(char *xored, char *s_boxed)
         if (xored[(count * 6) + 4] == '0')
             y -= 1;
         
-        sboxes_tobinary(s_boxes[count][(16 * x) + y], &s_boxed[count * 4]);
+        get_sbox_binary(s_boxes[count][(16 * x) + y], &s_boxed[count * 4]);
     }
 }
 
@@ -59,7 +54,9 @@ void swap_blocks(char *left, char *right, char *p_boxed, u_int8_t round)
 
 void execute_round(t_block *block, t_keys *keys, u_int8_t round)
 {
-    expansion_permutation(block->right, block->expanded);
+    permute(block->right, block->expanded, &expansion_permutation[0], 48);
+
+    // expansion_permutation(block->right, block->expanded);
     xor_bits_string(block->expanded, keys->round_keys[round], block->xored, 48);
     s_box(block->xored, block->s_boxed);
     permute(block->s_boxed, block->p_boxed, &p_box[0], 32);
