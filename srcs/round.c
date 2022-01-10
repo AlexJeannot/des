@@ -1,5 +1,14 @@
 #include "../incs/des.h"
 
+void prepare_rounds(t_block *block, char *input)
+{
+    bzero(block, sizeof(t_block));
+    get_string_binary(input, &block->raw[0], 8);
+    permute(&block->raw[0], &block->permuted[0], &initial_permutation[0], 64);
+    strncpy(&block->left[0], &block->permuted[0], 32);
+    strncpy(&block->right[0], &block->permuted[32], 32);
+}
+
 void s_box(char *xored, char *s_boxed)
 {
     u_int8_t x;
