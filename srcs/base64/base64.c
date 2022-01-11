@@ -7,17 +7,33 @@ u_int8_t is_last_block(u_int64_t total_block, u_int64_t current_block)
     return (FALSE);
 }
 
-int base64(t_message_base64 *msg_des, t_args *args)
+static void retrieve_data(void *data, t_args *args, t_message_base64 *msg)
 {
-    t_message_base64 msg_base64;
-    (void)msg_des;
-
-    bzero(&msg_base64, sizeof(t_message_base64));
-
-    if (args->process_type == ENCODING)
-        process_encoding(&msg_base64, args);
+    if (args->algorithm == ALGO_DES)
+    {
+        msg->raw_content = ((t_message_des *)data)->input;
+        msg->rc_size = ((t_message_des *)data)->rc_size;
+        msg->output_fd = ((t_message_des *)data)->output_fd;
+    }
     else
-        process_decoding(&msg_base64, args);
+    {
+        msg->raw_content = ((t_data *)data)->input;
+        msg->rc_size = ((t_data *)data)->rc_size;
+        msg->output_fd = ((t_data *)data)->output_fd;
+    }
+}
+
+int base64(void *data, t_args *args)
+{
+    t_message_base64 msg;
+
+
+    bzero(&msg, sizeof(t_message_base64));
+    retrieve_data(data, args, &msg);
+    if (args->process_type == ENCODING)
+        process_encoding(&msg, args);
+    else
+        process_decoding(&msg, args);
 
     // clean_msg(&msg);
 

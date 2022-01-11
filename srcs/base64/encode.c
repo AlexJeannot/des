@@ -110,28 +110,22 @@ void encode_msg_base64(t_message_base64 *msg)
 void write_encoded(t_message_base64 *msg, t_args *args)
 {
     u_int64_t count = 0;
-    int32_t fd;
-
-    if (args->o == TRUE)
-        fd = get_file(args, OUTPUT);
-    else
-        fd = 1;
 
     for (; count < msg->pc_size; count++)
     {
-        write(fd, &msg->processed_content[count], 1);
+        write(msg->output_fd, &msg->processed_content[count], 1);
         if (args->n == TRUE && count != 0 && (count + 1) % 64 == 0)
-            write(fd, "\n", 1);
+            write(msg->output_fd, "\n", 1);
     }
     if (args->n == FALSE || (count + 1) % 64 != 0)
-        write(fd, "\n", 1);
+        write(msg->output_fd, "\n", 1);
 }
 
 void process_encoding(t_message_base64 *msg, t_args *args)
 {
-    (void)args;
     format_decoded_msg(msg);
     prepare_encoded_output(msg);
     encode_msg_base64(msg);
-    // write_encoded(msg, args);
+    if (args->algorithm == ALGO_BASE64)
+        write_encoded(msg, args);
 }

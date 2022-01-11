@@ -112,25 +112,17 @@ void decode_msg_base64(t_message_base64 *msg)
     }
 }
 
-void write_decoded(t_message_base64 *msg, t_args *args)
+void write_decoded(t_message_base64 *msg)
 {
-    int32_t fd;
-
-    if (args->o == TRUE)
-        fd = get_file(args, OUTPUT);
-    else
-        fd = 1;
-    
     for (u_int64_t count = 0; count < msg->pc_size; count++)
-        write(fd, &msg->processed_content[count], 1);
+        write(msg->output_fd, &msg->processed_content[count], 1);
 }
 
 void process_decoding(t_message_base64 *msg, t_args *args)
 {
-    (void)args;
-    
     format_encoded_msg(msg);
     prepare_decoded_output(msg);
     decode_msg_base64(msg);
-    // write_decoded(msg, args);
+    if (args->algorithm == ALGO_BASE64)
+        write_decoded(msg);
 }

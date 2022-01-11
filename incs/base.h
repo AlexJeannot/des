@@ -16,8 +16,15 @@
 # define EN 5 // ENCRYPTION/ENCODING
 # define DE 6 // DECRYPTION/DECODING
 
+# define ALGO_DES 7
+# define ALGO_BASE64 8
+
+
+
+#
 typedef struct s_args
 {
+    u_int8_t algorithm;
     u_int8_t d;
     u_int8_t process_type;
     u_int8_t i;
@@ -36,6 +43,7 @@ typedef struct  s_data
     char *input;
     u_int64_t rc_size;
     int32_t output_fd;
+    char key[16];
 }               t_data;
 
 typedef struct  s_message_des
@@ -56,9 +64,8 @@ typedef struct  s_message_base64
     u_int64_t           pc_size;
     u_int64_t           cc_size;
     u_int64_t           blocks_size;
+    int32_t             output_fd;
 }               t_message_base64;
-
-
 
 
 /*
@@ -91,5 +98,13 @@ void    args_error(t_args *args, const char *reason, const char *input);
 int32_t     get_file(t_args *args, u_int8_t type);
 void get_content(t_data *data, t_args *args);
 void add_output_fd(t_data *data, t_args *args);
+
+
+
+
+
+
+int base64(void *input, t_args *args);
+void des(t_data *data, t_args *args);
 
 #endif

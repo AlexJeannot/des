@@ -117,9 +117,27 @@ int32_t     parse_options(t_args *args, char *input, char *next_input, int32_t a
     return (0);
 }
 
+void    process_algorithm(t_args *args, char *input)
+{
+    if (!input)
+        args_error(args, "No algorithm provided", NULL);
+    
+    if (strncmp(input, "des", 3) == 0)
+        args->algorithm = ALGO_DES;
+    else if (strncmp(input, "base64", 6) == 0)
+        args->algorithm = ALGO_BASE64;
+    else
+        args_error(args, "Wrong algorithm provided", input);
+}
+
 void        parse_args(t_args *args, char **list_args, int32_t nb_args)
 {
-    for (int32_t index_args = 0; index_args < nb_args; index_args++)
+    if (nb_args == 0)
+        args_error(args, "No arguments provided", NULL);
+
+    process_algorithm(args, list_args[0]);
+
+    for (int32_t index_args = 1; index_args < nb_args ; index_args++)
     {
         if (is_option(list_args[index_args]))
             index_args += parse_options(args, list_args[index_args], list_args[index_args + 1], (nb_args - index_args));
@@ -133,6 +151,7 @@ void control_args(t_data *data, t_args *args)
     if (!(args->process_type))
         args->process_type = EN;
     add_output_fd(data, args);
+    strncpy(data->key, args->key, 16);
 }
 
 void        process_args(t_data *data, t_args *args, char **list_args, int32_t nb_args)
