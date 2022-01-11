@@ -1,6 +1,6 @@
 #include "../incs/des.h"
 
-void get_string_binary(char *input, char *output, u_int64_t size)
+void get_string_binary(t_message *msg, char *input, char *output, u_int64_t size)
 {
     int count;
 
@@ -9,12 +9,14 @@ void get_string_binary(char *input, char *output, u_int64_t size)
     {
         for (int bits = 7; bits >= 0; bits--)
         {
-            if (((input[bytes] >> bits) & 1) == 0)
+            if (msg->rc_size == 0 || ((input[bytes] >> bits) & 1) == 0)
                 output[count] = '0';
             else if (((input[bytes] >> bits) & 1) == 1)
                 output[count] = '1';
             count++;
         }
+        if (msg->rc_size > 0)
+            msg->rc_size--;
     }
 }
 
@@ -38,11 +40,17 @@ void get_hex_binary(char *input, char *output)
             case '8':   strcat(&output[0], "1000"); break;
             case '9':   strcat(&output[0], "1001"); break;
             case 'A':   strcat(&output[0], "1010"); break;
+            case 'a':   strcat(&output[0], "1010"); break;
             case 'B':   strcat(&output[0], "1011"); break;
+            case 'b':   strcat(&output[0], "1011"); break;
             case 'C':   strcat(&output[0], "1100"); break;
+            case 'c':   strcat(&output[0], "1100"); break;
             case 'D':   strcat(&output[0], "1101"); break;
+            case 'd':   strcat(&output[0], "1101"); break;
             case 'E':   strcat(&output[0], "1110"); break;
+            case 'e':   strcat(&output[0], "1110"); break;
             case 'F':   strcat(&output[0], "1111"); break;
+            case 'f':   strcat(&output[0], "1111"); break;
         }
     }
 }

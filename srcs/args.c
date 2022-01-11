@@ -26,11 +26,21 @@ int32_t save_io(t_message *msg, t_args *args, char *file, int32_t args_diff, u_i
      
     if (type == INPUT)
     {
+        if (args->i == TRUE)
+        {
+            free(tmp_file);
+            args_error(msg, "Input file already provided", file);
+        }
         args->i = TRUE;
         args->input_path = tmp_file;
     }
     else
     {
+        if (args->o == TRUE)
+        {
+            free(tmp_file);
+            args_error(msg, "Output file already provided", file);
+        }
         args->o = TRUE;
         args->output_path = tmp_file;
     }
@@ -38,7 +48,31 @@ int32_t save_io(t_message *msg, t_args *args, char *file, int32_t args_diff, u_i
     return (1);
 }
 
-int32_t     parse_options(t_message *msg, t_args *args, char *input, char *next_input, int32_t args_diff)
+int32_t save_key(t_message *msg, t_args *args, t_keys *keys, char *key, int32_t args_diff)
+{
+    (void)args;
+    
+    if (args_diff < 2 || !(key))
+        args_error(msg, "No hexadecimal key provided", NULL);
+
+    if (args->k == TRUE)
+        args_error(msg, "key hexadecimal already provided", NULL);
+
+    if (!(is_hexadecimal(key)))
+        args_error(msg, "Not a hexadecimal key provided", NULL);
+
+    if (strlen(key) > 16)
+        printf("Hexadecimal key is too long, ignoring excess\n");
+    else if (strlen(key) > 16)
+        printf("Hexadecimal key is too short, padding with zero bytes to length\n");
+
+    strncpy(keys->origin_key, key, 16);
+
+    args->k = TRUE;
+    return (1);
+}
+
+int32_t     parse_options(t_message *msg, t_args *args, t_keys *keys, char *input, char *next_input, int32_t args_diff)
 {
     if (!input)
         args_error(msg, "No option provided", NULL);
@@ -70,18 +104,20 @@ int32_t     parse_options(t_message *msg, t_args *args, char *input, char *next_
         return (save_io(msg, args, next_input, args_diff, INPUT));
     else if (input[1] == 'o')
         return (save_io(msg, args, next_input, args_diff, OUTPUT));
+    else if (input[1] == 'k')
+        return (save_key(msg, args, keys, next_input, args_diff));
     else
         args_error(msg, "Wrong option provided", input);
 
     return (0);
 }
 
-void        parse_args(t_args *args, t_message *msg, char **list_args, int32_t nb_args)
+void        parse_args(t_args *args, t_message *msg, t_keys *keys, char **list_args, int32_t nb_args)
 {
     for (int32_t index_args = 0; index_args < nb_args; index_args++)
     {
         if (is_option(list_args[index_args]))
-            index_args += parse_options(msg, args, list_args[index_args], list_args[index_args + 1], (nb_args - index_args));
+            index_args += parse_options(msg, args, keys, list_args[index_args], list_args[index_args + 1], (nb_args - index_args));
         else 
             args_error(msg, "Wrong option", list_args[index_args]);
     }

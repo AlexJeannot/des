@@ -43,7 +43,7 @@ void create_all_round_keys(t_keys *keys, u_int8_t type)
 
     bzero(&binary_key[0], 64);
     bzero(&truncated_binary_key[0], 56);
-
+    
     get_hex_binary(keys->origin_key, &binary_key[0]);
     permute(&binary_key[0], &truncated_binary_key[0], &key_permutation[0], 56);
     set_round_keys(keys, &truncated_binary_key[0], type);

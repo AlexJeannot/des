@@ -21,14 +21,16 @@ typedef struct s_args
     u_int8_t process_type;
     u_int8_t i;
     u_int8_t o;
+    u_int8_t k;
     // u_int8_t n;
+
     char *input_path;
     char *output_path;
 }   t_args;
 
 typedef struct  s_keys
 {
-    char *origin_key;
+    char origin_key[16];
     char round_keys[16][48];
 }               t_keys;
 
@@ -57,12 +59,12 @@ typedef struct  s_message
 /*
 **  ARGS.c
 */
-void        parse_args(t_args *args, t_message *msg, char **list_args, int32_t nb_args);
+void        parse_args(t_args *args, t_message *msg, t_keys *keys, char **list_args, int32_t nb_args);
 
 /*
 **  BINARY.c
 */
-void get_string_binary(char *input, char *output, u_int64_t size);
+void get_string_binary(t_message *msg, char *input, char *output, u_int64_t size);
 void get_hex_binary(char *input, char *output);
 void get_sbox_binary(u_int8_t input, char *output);
 
@@ -80,6 +82,7 @@ extern const u_int8_t key_permutation[56];
 /*
 **  CONTROL.c
 */
+u_int8_t is_hexadecimal(char *input);
 
 /*
 **  ERROR.c 
@@ -108,8 +111,13 @@ void xor_bits_string(char *first, char *second, char *output, u_int64_t size);
 /*
 **  ROUND.c
 */
-void prepare_rounds(t_block *block, char *input);
+void prepare_rounds(t_message *msg, t_block *block);
 void execute_round(t_block *block, t_keys *keys, u_int8_t round);
 
+
+
+
+
+void print_binary_str(char *str, char *type, int size);
 
 #endif
