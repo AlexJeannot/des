@@ -1,4 +1,4 @@
-#include "../incs/des.h"
+#include "../../incs/des.h"
 
 void print_binary_str(char *str, char *type, int size)
 {
@@ -24,26 +24,30 @@ void increment_output(t_block *block, char *output)
     }
 }
 
-void write_output(t_message *msg)
+void write_output(t_message_des *msg)
 {
     if (write(msg->output_fd, &msg->output[0], 8) == -1)
-        fatal_error(msg, "Output writing on file descriptor");
+        fatal_error(NULL, NULL, "Output writing on file descriptor"); //TODO
 }
 
-int main(int argc, char **argv)
+void des(t_data *data, t_args *args)
 {
-    t_args args;
+    // t_args args;
     t_keys keys;
-    t_message msg;
+    t_message_des msg;
     t_block block;
 
-    bzero(&args, sizeof(t_args));
-    bzero(&msg, sizeof(t_message));
+    // bzero(&args, sizeof(t_args));
+    bzero(&msg, sizeof(t_message_des));
     bzero(&keys, sizeof(t_keys));
 
-    parse_args(&args, &msg, &keys, &argv[1], argc - 1);
-    get_content(&msg, &args);
-    create_all_round_keys(&keys, args.process_type);
+    (void)data;
+    // parse_args(&args, &msg, &keys, &argv[1], argc - 1);
+    // get_content(&msg, &args);
+    create_all_round_keys(&keys, args->process_type);
+
+    // if (args->a && args->d)
+
     for (u_int64_t block_index = 0; block_index < 1; block_index++)
     {
         prepare_rounds(&msg, &block);
@@ -54,5 +58,5 @@ int main(int argc, char **argv)
     }
 
     printf("\n");
-    clean_msg(&msg);
+    // clean_msg(&msg);
 }

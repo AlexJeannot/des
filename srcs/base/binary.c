@@ -1,4 +1,4 @@
-#include "../incs/des.h"
+#include "../../incs/des.h"
 
 void add_padding(char *output, u_int64_t bytes, u_int64_t size)
 {
@@ -20,16 +20,16 @@ void add_padding(char *output, u_int64_t bytes, u_int64_t size)
     }
 }
 
-void get_string_binary(t_message *msg, char *input, char *output, u_int64_t size)
+void get_string_binary(char *input, char *output, u_int64_t input_size, u_int64_t output_size)
 {
     u_int8_t count;
 
     count = 0;
-    for (u_int64_t bytes = 0; bytes < size; bytes++)
+    for (u_int64_t bytes = 0; bytes < output_size; bytes++)
     {
-        if (msg->rc_size == 0)
+        if (input_size == 0)
         {
-            add_padding(&output[count], bytes, size);
+            add_padding(&output[count], bytes, output_size);
             return ;
         }
 
@@ -41,8 +41,8 @@ void get_string_binary(t_message *msg, char *input, char *output, u_int64_t size
                 output[count] = '1';
             count++;
         }
-        if (msg->rc_size > 0)
-            msg->rc_size--;
+        if (input_size > 0)
+            input_size--;
     }
 }
 

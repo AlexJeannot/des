@@ -1,0 +1,3 @@
+close fd
+protect syscall (open, read, write)
+supprimer (void)

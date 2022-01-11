@@ -1,4 +1,4 @@
-#include "../incs/des.h"
+#include "../../incs/des.h"
 
 u_int8_t is_hexadecimal(char *input)
 {

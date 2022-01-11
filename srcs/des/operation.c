@@ -1,4 +1,4 @@
-#include "../incs/des.h"
+#include "../../incs/des.h"
 
 void permute(char *input, char *output, const u_int8_t *array, int size)
 {
