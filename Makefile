@@ -37,8 +37,7 @@ DES_SRCS 		= 	const.c		\
 
 BASE64_SRCS 	=	base64.c	\
 					decode.c	\
-					encode.c	\
-					msg.c
+					encode.c
 
 
 # OBJS

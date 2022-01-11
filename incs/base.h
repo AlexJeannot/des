@@ -50,6 +50,10 @@ typedef struct  s_message_des
 {
     char *input;
     u_int64_t rc_size;
+
+    char *base64_processed;
+    u_int64_t base64_size;
+
     char output[64];
     int32_t output_fd;
 }               t_message_des;
@@ -104,7 +108,7 @@ void add_output_fd(t_data *data, t_args *args);
 
 
 
-int base64(void *input, t_args *args);
+void base64(void *input, t_args *args);
 void des(t_data *data, t_args *args);
 
 #endif

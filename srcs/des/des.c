@@ -51,7 +51,13 @@ void des(t_data *data, t_args *args)
     retrieve_data(data, &msg, &keys);
     create_all_round_keys(&keys, args->process_type);
 
-    // if (args->a && args->d)
+    if (args->a && args->process_type == DECRYPTION)
+    {
+        base64(&msg, args);
+        free(msg.input);
+        msg.input = msg.base64_processed;
+        msg.rc_size = msg.base64_size;
+    }
 
     for (u_int64_t block_index = 0; block_index < 1; block_index++)
     {

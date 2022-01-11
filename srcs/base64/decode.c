@@ -118,11 +118,16 @@ void write_decoded(t_message_base64 *msg)
         write(msg->output_fd, &msg->processed_content[count], 1);
 }
 
-void process_decoding(t_message_base64 *msg, t_args *args)
+void process_decoding(t_message_base64 *msg, t_message_des *msg_des, t_args *args)
 {
     format_encoded_msg(msg);
     prepare_decoded_output(msg);
     decode_msg_base64(msg);
+    if (args->algorithm == ALGO_DES)
+    {
+        msg_des->base64_processed = msg->processed_content;
+        msg_des->base64_size = msg->pc_size;
+    }
     if (args->algorithm == ALGO_BASE64)
         write_decoded(msg);
 }

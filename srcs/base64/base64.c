@@ -23,7 +23,7 @@ static void retrieve_data(void *data, t_args *args, t_message_base64 *msg)
     }
 }
 
-int base64(void *data, t_args *args)
+void base64(void *data, t_args *args)
 {
     t_message_base64 msg;
 
@@ -31,11 +31,10 @@ int base64(void *data, t_args *args)
     bzero(&msg, sizeof(t_message_base64));
     retrieve_data(data, args, &msg);
     if (args->process_type == ENCODING)
-        process_encoding(&msg, args);
+        process_encoding(&msg, data, args);
     else
-        process_decoding(&msg, args);
+        process_decoding(&msg, data, args);
 
     // clean_msg(&msg);
 
-    return (0);
 }
