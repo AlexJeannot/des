@@ -1,15 +1,41 @@
 #include "../incs/des.h"
 
+void add_padding(char *output, u_int64_t bytes, u_int64_t size)
+{
+    u_int8_t count;
+    u_int8_t padding_value;
+
+    count = 0;
+    padding_value = size - bytes;
+    for (; bytes < size; bytes++)
+    {
+        for (int8_t bits = 7; bits >= 0; bits--)
+        {
+            if (((padding_value >> bits) & 1) == 0)
+                output[count] = '0';
+            else if (((padding_value >> bits) & 1) == 1)
+                output[count] = '1';
+            count++;
+        }
+    }
+}
+
 void get_string_binary(t_message *msg, char *input, char *output, u_int64_t size)
 {
-    int count;
+    u_int8_t count;
 
     count = 0;
     for (u_int64_t bytes = 0; bytes < size; bytes++)
     {
+        if (msg->rc_size == 0)
+        {
+            add_padding(&output[count], bytes, size);
+            return ;
+        }
+
         for (int bits = 7; bits >= 0; bits--)
         {
-            if (msg->rc_size == 0 || ((input[bytes] >> bits) & 1) == 0)
+            if (((input[bytes] >> bits) & 1) == 0)
                 output[count] = '0';
             else if (((input[bytes] >> bits) & 1) == 1)
                 output[count] = '1';
