@@ -50,7 +50,7 @@ void xor_bits_string(char *first, char *second, char *output, u_int64_t size);
 /*
 **  ROUND.c
 */
-void prepare_rounds(t_message_des *msg, t_block *block);
+void prepare_rounds(t_message_des *msg, t_block *block, char *input);
 void execute_round(t_block *block, t_keys *keys, u_int8_t round);
 
 

@@ -7,33 +7,24 @@ u_int8_t is_last_block(u_int64_t total_block, u_int64_t current_block)
     return (FALSE);
 }
 
-static void retrieve_data(void *data, t_args *args, t_message_base64 *msg)
+static void retrieve_data(t_data *data, t_message_base64 *msg)
 {
-    if (args->algorithm == ALGO_DES)
-    {
-        msg->raw_content = ((t_message_des *)data)->input;
-        msg->rc_size = ((t_message_des *)data)->rc_size;
-        msg->output_fd = ((t_message_des *)data)->output_fd;
-    }
-    else
-    {
-        msg->raw_content = ((t_data *)data)->input;
-        msg->rc_size = ((t_data *)data)->rc_size;
-        msg->output_fd = ((t_data *)data)->output_fd;
-    }
+    msg->raw_content = data->input;
+    msg->rc_size = data->rc_size;
+    msg->output_fd = data->output_fd;
 }
 
-void base64(void *data, t_args *args)
+void base64(t_data *data, t_args *args, t_message_des *msg_des)
 {
     t_message_base64 msg;
 
 
     bzero(&msg, sizeof(t_message_base64));
-    retrieve_data(data, args, &msg);
+    retrieve_data(data, &msg);
     if (args->process_type == ENCODING)
-        process_encoding(&msg, data, args);
+        process_encoding(&msg, msg_des, args);
     else
-        process_decoding(&msg, data, args);
+        process_decoding(&msg, msg_des, args);
 
     // clean_msg(&msg);
 

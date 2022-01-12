@@ -15,3 +15,8 @@ u_int8_t is_hexadecimal(char *input)
     }
     return (TRUE);
 }
+
+u_int8_t base64_option(t_args *args)
+{
+    return (args->a);
+}

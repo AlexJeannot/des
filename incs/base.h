@@ -49,13 +49,11 @@ typedef struct  s_data
 typedef struct  s_message_des
 {
     char *input;
+    char *output;
     u_int64_t rc_size;
-
-    char *base64_processed;
-    u_int64_t base64_size;
-
-    char output[64];
+    u_int64_t pc_size;
     int32_t output_fd;
+    u_int64_t block_number;
 }               t_message_des;
 
 typedef struct  s_message_base64
@@ -88,6 +86,7 @@ void get_sbox_binary(u_int8_t input, char *output);
 **  CONTROL.c
 */
 u_int8_t is_hexadecimal(char *input);
+u_int8_t base64_option(t_args *args);
 
 /*
 **  ERROR.c 
@@ -108,7 +107,7 @@ void add_output_fd(t_data *data, t_args *args);
 
 
 
-void base64(void *input, t_args *args);
+void base64(t_data *data, t_args *args, t_message_des *msg_des);
 void des(t_data *data, t_args *args);
 
 #endif

@@ -1,9 +1,9 @@
 #include "../../incs/des.h"
 
-void prepare_rounds(t_message_des *msg, t_block *block)
+void prepare_rounds(t_message_des *msg, t_block *block, char *input)
 {
     bzero(block, sizeof(t_block));
-    get_string_binary(msg->input, &block->raw[0], msg->rc_size, 8);
+    get_string_binary(input, &block->raw[0], msg->rc_size, 8);
     msg->rc_size -= 8;
     permute(&block->raw[0], &block->permuted[0], &initial_permutation[0], 64);
     strncpy(&block->left[0], &block->permuted[0], 32);

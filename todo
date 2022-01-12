@@ -3,3 +3,5 @@ protect syscall (open, read, write)
 supprimer (void)
 -help
 ask stdin
+free 
+control functions
