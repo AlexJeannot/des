@@ -61,42 +61,42 @@ void increment_output(t_args *args, t_message_des *msg, t_block *block, char *ou
 
 void write_output(t_data *data, t_args *args, t_message_des *msg)
 {
-    if (base64_option(args))
+    if (base64_option())
     {
         free(data->input);
         data->input = msg->output;
         data->rc_size = msg->pc_size;
-        base64(data, args, msg);
+        base64(msg);
     }
 
     if (write(msg->output_fd, &msg->output[0], msg->pc_size) == -1)
-        fatal_error(NULL, NULL, "Output writing on file descriptor"); //TODO
-    if (base64_option(args) && args->process_type == ENCRYPTION)
+        fatal_error("Output writing on file descriptor"); //TODO
+    if (base64_option() && args->process_type == ENCRYPTION)
         if (write(msg->output_fd, "\n", 1) == -1)
-            fatal_error(NULL, NULL, "Output writing on file descriptor"); //TODO
+            fatal_error("Output writing on file descriptor"); //TODO
 }
 
-static void retrieve_data(t_data *data, t_args *args, t_message_des *msg, t_keys *keys)
+static void retrieve_data(t_message_des *msg, t_keys *keys)
 {
     if (args->a && args->process_type == DECRYPTION)
-        base64(data, args, msg);
+        base64(msg);
     else
     {
         msg->input = data->input;
         msg->rc_size = data->rc_size;
     }
-    strncpy(keys->origin_key, data->key, 16);
-    msg->output_fd = data->output_fd;
+    strncpy(keys->origin_key, args->key, 16);
+    msg->output_fd = args->output_fd;
     msg->block_number = (msg->rc_size % 8 == 0) ? msg->rc_size / 8 : (msg->rc_size / 8) + 1;
 }
 
 void prepare_output(t_message_des *msg)
 {
     if (!(msg->output = (char *)malloc(msg->rc_size)))
-        fatal_error(NULL, NULL, "Processed content memory allocation");
+        fatal_error("Processed content memory allocation");
 }
 
-void des(t_data *data, t_args *args)
+void des(void)
 {
     t_keys keys;
     t_message_des msg;
@@ -105,7 +105,7 @@ void des(t_data *data, t_args *args)
     bzero(&msg, sizeof(t_message_des));
     bzero(&keys, sizeof(t_keys));
 
-    retrieve_data(data, args, &msg, &keys);
+    retrieve_data(&msg, &keys);
     prepare_output(&msg);
     create_all_round_keys(&keys, args->process_type);
 

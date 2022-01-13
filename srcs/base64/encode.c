@@ -61,7 +61,7 @@ void format_decoded_msg(t_message_base64 *msg)
         msg->fmt_content = msg->raw_content;
     else {
         if (!(msg->fmt_content = (char *)malloc(msg->fc_size)))
-            fatal_error(NULL, NULL, "formated content memory allocation"); //TODO
+            fatal_error("formated content memory allocation"); //TODO
         
         bzero(msg->fmt_content, msg->fc_size);
         memcpy(msg->fmt_content, msg->raw_content, msg->rc_size);
@@ -74,7 +74,7 @@ void prepare_encoded_output(t_message_base64 *msg)
     msg->blocks_size = msg->fc_size / 3;
 
     if (!(msg->processed_content = (char *)malloc(msg->pc_size + 1)))
-        fatal_error(NULL, NULL, "Processed content memory allocation"); //TODO
+        fatal_error("Processed content memory allocation"); //TODO
     bzero(msg->processed_content, (msg->pc_size + 1));
 }
 

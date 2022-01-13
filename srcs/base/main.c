@@ -1,20 +1,41 @@
 #include "../../incs/base.h"
 
+t_data *data;
+t_args *args;
+
+void control_args(int argc)
+{
+    if (argc < 2)
+        args_error("No arguments provided", NULL);
+}
+
+void process_hash(void)
+{
+
+}
+
+void process_other(void)
+{
+    if (args->algorithm == ALGO_DES)
+        des();
+    else if (args->algorithm == ALGO_BASE64)
+        base64(NULL);  
+}
+
 int main(int argc, char **argv)
 {
-    t_data data;
-    t_args args;
+    process_args(&argv[1], argc - 1);
 
-    bzero(&data, sizeof(t_data));
-    bzero(&args, sizeof(t_args));
+    // if (args->algorithm == ALGO_MD5)
+    //     des();
+    // else if (args->algorithm == ALGO_SHA256)
+    //     base64(NULL);  
+    if (args->algorithm == ALGO_BASE64)
+        base64(NULL);
+    else if (args->algorithm == ALGO_DES)
+        des();  
 
-    process_args(&data, &args, &argv[1], argc - 1);
-    get_content(&data, &args);
 
-    if (args.algorithm == ALGO_DES)
-        des(&data, &args);
-    else if (args.algorithm == ALGO_BASE64)
-        base64(&data, &args, NULL);
     
     return (0);
 }

@@ -7,59 +7,48 @@ u_int8_t    is_option(char *input)
     return (FALSE);
 }
 
-int32_t save_io(t_args *args, char *file, int32_t args_diff, u_int8_t type)
+void allocate_args(void)
 {
-    char *tmp_file;
+    if (!(args = (t_args *)malloc(sizeof(t_args))))
+        fatal_error("argument structure memory allocation");
+    bzero(args, sizeof(t_args));
+}
 
-    if (args_diff < 2 || !(file))
-    {
-        if (type == INPUT)
-            args_error(args, "No file provided as input", NULL);
-        else
-            args_error(args, "No file provided as output", NULL);
-    }
 
-    if (!(tmp_file = (char *)malloc(strlen(file) + 1)))
-        fatal_error(NULL, args, "input/output filename memory allocation");
-    bzero(tmp_file, strlen(file) + 1);
-    strncpy(tmp_file, file, strlen(file));
-     
+void process_io(char *file_path, u_int8_t type)
+{
+    t_data *new_data;
+
+    new_data = NULL;
+    if (!is_hash_algorithm() && type == INPUT && args->i == TRUE)
+        args_error("Input file already provided", file_path);
+    else if (!is_hash_algorithm() && type == OUTPUT && args->o == TRUE)
+        args_error("OUTPUT file already provided", file_path);
+
     if (type == INPUT)
     {
-        if (args->i == TRUE)
-        {
-            free(tmp_file);
-            args_error(args, "Input file already provided", file);
-        }
+        create_data(&new_data);
+        get_file_content(new_data, get_file(file_path, INPUT));
+        organize_data(new_data);
         args->i = TRUE;
-        args->input_path = tmp_file;
     }
     else
     {
-        if (args->o == TRUE)
-        {
-            free(tmp_file);
-            args_error(args, "Output file already provided", file);
-        }
+        args->output_fd = get_file(file_path, OUTPUT);
         args->o = TRUE;
-        args->output_path = tmp_file;
     }
-    
-    return (1);
 }
 
-int32_t save_key(t_args *args, char *key, int32_t args_diff)
+int32_t save_key(char *key, int32_t args_diff)
 {
-    (void)args;
-    
     if (args_diff < 2 || !(key))
-        args_error(args, "No hexadecimal key provided", NULL);
+        args_error("No hexadecimal key provided", NULL);
 
     if (args->k == TRUE)
-        args_error(args, "key hexadecimal already provided", NULL);
+        args_error("key hexadecimal already provided", NULL);
 
     if (!(is_hexadecimal(key)))
-        args_error(args, "Not a hexadecimal key provided", NULL);
+        args_error("Not a hexadecimal key provided", NULL);
 
     if (strlen(key) > 16)
         printf("Hexadecimal key is too long, ignoring excess\n");
@@ -72,91 +61,52 @@ int32_t save_key(t_args *args, char *key, int32_t args_diff)
     return (1);
 }
 
-int32_t     parse_options(t_args *args, char *input, char *next_input, int32_t args_diff)
+
+void    get_algorithm(char *input)
 {
     if (!input)
-        args_error(args, "No option provided", NULL);
-    else if (strlen(input) != 2)
-        args_error(args, "Wrong option provided", input);
+        args_error("No algorithm provided", NULL);
 
-    if (input[1] == 'd') {
-        if (!(args->process_type))
-            args->process_type = DE;
-        else if (args->process_type == DE)
-            args_error(args, "Option provided twice", input);
-        else if (args->process_type == EN)
-            args_error(args, "Encryption option already provided", input);
-    }
-    else if (input[1] == 'e') {
-        if (!(args->process_type))
-            args->process_type = EN;
-        else if (args->process_type == EN)
-            args_error(args, "Option provided twice", input);
-        else if (args->process_type == EN)
-            args_error(args, "Decryption option already provided", input);
-    }
-    else if (input[1] == 'a') {
-        if (args->a == TRUE)
-            args_error(args, "Option provided twice", input);
-        args->a = TRUE;
-    }
-    else if (input[1] == 'n') {
-        if (args->n == TRUE)
-            args_error(args, "Option provided twice", input);
-        args->n = TRUE;
-    }
-    else if (input[1] == 'i')
-        return (save_io(args, next_input, args_diff, INPUT));
-    else if (input[1] == 'o')
-        return (save_io(args, next_input, args_diff, OUTPUT));
-    else if (input[1] == 'k')
-        return (save_key(args, next_input, args_diff));
-    else
-        args_error(args, "Wrong option provided", input);
-
-    return (0);
-}
-
-void    process_algorithm(t_args *args, char *input)
-{
-    if (!input)
-        args_error(args, "No algorithm provided", NULL);
-    
     if (strncmp(input, "des", 3) == 0)
         args->algorithm = ALGO_DES;
     else if (strncmp(input, "base64", 6) == 0)
         args->algorithm = ALGO_BASE64;
+    else if (strncmp(input, "md5", 3) == 0)
+        args->algorithm = ALGO_MD5;
+    else if (strncmp(input, "sha256", 6) == 0)
+        args->algorithm = ALGO_SHA256;
     else
-        args_error(args, "Wrong algorithm provided", input);
+        args_error("Wrong algorithm provided", input);
 }
 
-void        parse_args(t_args *args, char **list_args, int32_t nb_args)
+void        parse_args(char **list_args, int32_t nb_args)
 {
     if (nb_args == 0)
-        args_error(args, "No arguments provided", NULL);
+        args_error("No arguments provided", NULL);
 
-    process_algorithm(args, list_args[0]);
+    get_algorithm(list_args[0]);
 
     for (int32_t index_args = 1; index_args < nb_args ; index_args++)
     {
         if (is_option(list_args[index_args]))
-            index_args += parse_options(args, list_args[index_args], list_args[index_args + 1], (nb_args - index_args));
+            index_args += parse_options(list_args[index_args], list_args[index_args + 1], (nb_args - index_args));
         else 
-            args_error(args, "Wrong option", list_args[index_args]);
+            args_error("Wrong option", list_args[index_args]);
     }
+
 }
 
-void control_args(t_data *data, t_args *args)
+void format_args(void)
 {
     if (!(args->process_type))
         args->process_type = EN;
-    add_output_fd(data, args);
-    strncpy(data->key, args->key, 16);
+    // add_output_fd(data, args);
+    // strncpy(args->key, args->key, 16);
 }
 
-void        process_args(t_data *data, t_args *args, char **list_args, int32_t nb_args)
+void        process_args(char **list_args, int32_t nb_args)
 {
-    parse_args(args, list_args, nb_args);
-    control_args(data, args);
+    allocate_args();
+    parse_args(list_args, nb_args);
+    format_args();
 }
-

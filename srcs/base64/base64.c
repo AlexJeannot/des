@@ -11,10 +11,10 @@ static void retrieve_data(t_data *data, t_message_base64 *msg)
 {
     msg->raw_content = data->input;
     msg->rc_size = data->rc_size;
-    msg->output_fd = data->output_fd;
+    msg->output_fd = args->output_fd;
 }
 
-void base64(t_data *data, t_args *args, t_message_des *msg_des)
+void base64(t_message_des *msg_des)
 {
     t_message_base64 msg;
 

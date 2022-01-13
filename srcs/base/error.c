@@ -6,7 +6,7 @@
 //         free(msg->input);
 // }
 
-void        clean_data(t_data *data)
+void        clean_data(void)
 {
     if (!data)
         return ;
@@ -14,7 +14,7 @@ void        clean_data(t_data *data)
         free(data->input);
 }
 
-void        clean_args(t_args *args)
+void        clean_args(void)
 {
     if (!args)
         return ;
@@ -24,20 +24,20 @@ void        clean_args(t_args *args)
         free(args->output_path);
 }
 
-void    fatal_error(t_data *data, t_args *args, const char *reason)
+void    fatal_error(const char *reason)
 {
     printf("Error: %s\n", reason);
-    clean_data(data);
-    clean_args(args);
+    clean_data();
+    clean_args();
     exit(1);
 }
 
-void    args_error(t_args *args, const char *reason, const char *input)
+void    args_error(const char *reason, const char *input)
 {
     if (input)
         printf("Error: %s [%s]\n", reason, input);
     else
         printf("Error: %s\n", reason);
-    clean_args(args);
+    clean_args();
     exit(1);
 }
