@@ -18,10 +18,7 @@ void        clean_args(void)
 {
     if (!args)
         return ;
-    if (args->input_path)
-        free(args->input_path);
-    if (args->output_path)
-        free(args->output_path);
+
 }
 
 void    fatal_error(const char *reason)

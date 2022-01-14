@@ -20,3 +20,15 @@ u_int8_t base64_option(void)
 {
     return (args->a);
 }
+
+u_int8_t is_stdin_process(void)
+{
+    if ((is_hash_algorithm() && args->p == TRUE) || data == NULL)
+        return (TRUE);
+    return (FALSE);
+}
+
+u_int8_t is_hash_algorithm(void)
+{
+    return (args->algorithm == ALGO_MD5 || args->algorithm == ALGO_SHA256);
+}

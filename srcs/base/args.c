@@ -14,39 +14,59 @@ void allocate_args(void)
     bzero(args, sizeof(t_args));
 }
 
+void process_string(char *input)
+{
+    t_data   *new_data;
+
+    create_data(&new_data);
+    new_data->rc_size = strlen(input);
+    if (!(new_data->input = (char *)malloc(new_data->rc_size)))
+        fatal_error("string input memory allocation");
+    bzero(new_data->input, new_data->rc_size);
+
+    strncpy(new_data->input, input, new_data->rc_size);
+    new_data->src_type = SRC_ARG;
+
+    organize_data(new_data);
+}
+
+void    process_stdin(void)
+{
+    t_data   *new_data;
+
+    create_data(&new_data);
+    get_file_content(new_data, STDIN_FILENO);
+    new_data->src_type = SRC_STDIN;
+
+    new_data->next = data;
+    data = new_data;
+}
 
 void process_io(char *file_path, u_int8_t type)
 {
     t_data *new_data;
+    int32_t fd;
 
     new_data = NULL;
-    if (!is_hash_algorithm() && type == INPUT && args->i == TRUE)
-        args_error("Input file already provided", file_path);
-    else if (!is_hash_algorithm() && type == OUTPUT && args->o == TRUE)
-        args_error("OUTPUT file already provided", file_path);
-
     if (type == INPUT)
     {
         create_data(&new_data);
-        get_file_content(new_data, get_file(file_path, INPUT));
+        if ((fd = get_file(new_data, file_path, INPUT)) != -1)
+            get_file_content(new_data, fd);
+        if (is_hash_algorithm())
+            set_file_context(new_data, file_path);
         organize_data(new_data);
         args->i = TRUE;
     }
     else
     {
-        args->output_fd = get_file(file_path, OUTPUT);
+        args->output_fd = get_file(new_data, file_path, OUTPUT);
         args->o = TRUE;
     }
 }
 
-int32_t save_key(char *key, int32_t args_diff)
+void get_key(char *key)
 {
-    if (args_diff < 2 || !(key))
-        args_error("No hexadecimal key provided", NULL);
-
-    if (args->k == TRUE)
-        args_error("key hexadecimal already provided", NULL);
-
     if (!(is_hexadecimal(key)))
         args_error("Not a hexadecimal key provided", NULL);
 
@@ -56,9 +76,7 @@ int32_t save_key(char *key, int32_t args_diff)
         printf("Hexadecimal key is too short, padding with zero bytes to length\n");
 
     strncpy(args->key, key, 16);
-
     args->k = TRUE;
-    return (1);
 }
 
 
@@ -81,27 +99,36 @@ void    get_algorithm(char *input)
 
 void        parse_args(char **list_args, int32_t nb_args)
 {
+    int32_t index_args;
+
     if (nb_args == 0)
         args_error("No arguments provided", NULL);
 
-    get_algorithm(list_args[0]);
-
-    for (int32_t index_args = 1; index_args < nb_args ; index_args++)
+    index_args = 0;
+    get_algorithm(list_args[index_args]);
+    for (index_args = 1; index_args < nb_args ; index_args++)
     {
         if (is_option(list_args[index_args]))
             index_args += parse_options(list_args[index_args], list_args[index_args + 1], (nb_args - index_args));
-        else 
+        else if (is_hash_algorithm())
+            break;
+        else
             args_error("Wrong option", list_args[index_args]);
     }
-
+    if (is_hash_algorithm())
+    {
+        for (; index_args < nb_args; index_args++)
+                process_io(list_args[index_args], INPUT);
+    }
+    if (is_stdin_process())
+        process_stdin();
 }
 
 void format_args(void)
 {
     if (!(args->process_type))
         args->process_type = EN;
-    // add_output_fd(data, args);
-    // strncpy(args->key, args->key, 16);
+
 }
 
 void        process_args(char **list_args, int32_t nb_args)

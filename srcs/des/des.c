@@ -64,12 +64,12 @@ void write_output(t_data *data, t_args *args, t_message_des *msg)
     if (base64_option())
     {
         free(data->input);
-        data->input = msg->output;
+        data->input = msg->pc_content;
         data->rc_size = msg->pc_size;
         base64(msg);
     }
 
-    if (write(msg->output_fd, &msg->output[0], msg->pc_size) == -1)
+    if (write(msg->output_fd, &msg->pc_content[0], msg->pc_size) == -1)
         fatal_error("Output writing on file descriptor"); //TODO
     if (base64_option() && args->process_type == ENCRYPTION)
         if (write(msg->output_fd, "\n", 1) == -1)
@@ -82,7 +82,7 @@ static void retrieve_data(t_message_des *msg, t_keys *keys)
         base64(msg);
     else
     {
-        msg->input = data->input;
+        msg->raw_content = data->input;
         msg->rc_size = data->rc_size;
     }
     strncpy(keys->origin_key, args->key, 16);
@@ -92,7 +92,7 @@ static void retrieve_data(t_message_des *msg, t_keys *keys)
 
 void prepare_output(t_message_des *msg)
 {
-    if (!(msg->output = (char *)malloc(msg->rc_size)))
+    if (!(msg->pc_content = (char *)malloc(msg->rc_size)))
         fatal_error("Processed content memory allocation");
 }
 
@@ -111,10 +111,10 @@ void des(void)
 
     for (u_int64_t block_index = 0; block_index < msg.block_number; block_index++)
     {
-        prepare_rounds(&msg, &block, &msg.input[block_index * 8]);
+        prepare_rounds(&msg, &block, &msg.raw_content[block_index * 8]);
         for (u_int8_t round = 0; round < 16; round++)
             execute_round(&block, &keys, round);
-        increment_output(args, &msg, &block, &msg.output[block_index * 8], TRUE); //todo
+        increment_output(args, &msg, &block, &msg.pc_content[block_index * 8], TRUE); //todo
     }
     write_output(data, args, &msg);
 }

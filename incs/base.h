@@ -21,13 +21,14 @@
 # define ALGO_MD5 9
 # define ALGO_SHA256 10
 
-
+# define SRC_STDIN 11
+# define SRC_FILE 12
+# define SRC_ARG 13
 
 typedef struct s_args
 {
     u_int8_t algorithm;
     u_int8_t process_type;
-
 
     u_int8_t a;
     u_int8_t d;
@@ -42,8 +43,6 @@ typedef struct s_args
     u_int8_t s;
     u_int8_t v;
 
-    char *input_path;
-    char *output_path;
     char key[16];
     int32_t output_fd;
 }   t_args;
@@ -52,13 +51,16 @@ typedef struct  s_data
 {
     char *input;
     u_int64_t rc_size;
+    u_int8_t            nofile;
+    char                *src;
+    u_int8_t            src_type;
     struct s_data *next;
 }               t_data;
 
 typedef struct  s_message_des
 {
-    char *input;
-    char *output;
+    char *raw_content;
+    char *pc_content;
     u_int64_t rc_size;
     u_int64_t pc_size;
     int32_t output_fd;
@@ -69,7 +71,7 @@ typedef struct  s_message_base64
 {
     char                *raw_content;
     char                *fmt_content;
-    char                *processed_content;
+    char                *pc_content;
     u_int64_t           rc_size;
     u_int64_t           fc_size;
     u_int64_t           pc_size;
@@ -89,7 +91,6 @@ typedef struct  s_message_hash
     u_int64_t           cc_size;
     u_int8_t            nofile;
     u_int8_t            src_type;
-    struct  s_message   *next;
 }               t_message_hash;
 
 
@@ -100,9 +101,18 @@ u_int8_t    parse_options(char *input, char *next_input, int32_t args_diff);
 u_int8_t is_hash_algorithm(void);
 void create_data(t_data **new_data);
 void organize_data(t_data *new_data);
-int32_t     get_file(char *file_path, u_int8_t type);
+int32_t     get_file(t_data *new_data, char *file_path, u_int8_t type);
 void process_io(char *file_path, u_int8_t type);
-int32_t save_key(char *key, int32_t args_diff);
+void get_key(char *key);
+void        set_file_context(t_data *new_data, char *file_path);
+void process_string(char *input);
+u_int8_t is_stdin_process(void);
+void base64(t_message_des *msg_des);
+void des(void);
+void    format_msg(t_message_hash *msg, const u_int8_t swap);
+void    display_hash(const t_message_hash *msg);
+void    md5(void);
+void    build_hash(t_message_hash *msg, void *buffers, u_int32_t nb_words, const u_int8_t swap);
 
 /*
 **  ARGS.c
@@ -136,11 +146,15 @@ void    args_error(const char *reason, const char *input);
 void get_file_content(t_data *current_data, int32_t fd);
 
 
+/*
+** SWAP.C
+*/
+u_int16_t           swap_uint_16(u_int16_t val);
+int16_t             swap_int_16(int16_t val);
+u_int32_t           swap_uint_32(u_int32_t val);
+int32_t             swap_int_32(int32_t val);
+u_int64_t           swap_uint_64(u_int64_t val);
+int64_t             swap_int_64(int64_t val);
 
-
-
-
-void base64(t_message_des *msg_des);
-void des(void);
 
 #endif

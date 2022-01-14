@@ -20,12 +20,12 @@ void add_encoded_char(t_message_base64 *msg, u_int8_t nb)
     else if (nb == 63)
         encoded_char = '/';
 
-    msg->processed_content[msg->cc_size++] = encoded_char;
+    msg->pc_content[msg->cc_size++] = encoded_char;
 }
 
 void add_complement(t_message_base64 *msg)
 {
-    msg->processed_content[msg->cc_size++] = '=';
+    msg->pc_content[msg->cc_size++] = '=';
 }
 
 u_int8_t get_first_char(t_block *block)
@@ -73,9 +73,9 @@ void prepare_encoded_output(t_message_base64 *msg)
     msg->pc_size = msg->fc_size + (msg->fc_size / 3);
     msg->blocks_size = msg->fc_size / 3;
 
-    if (!(msg->processed_content = (char *)malloc(msg->pc_size + 1)))
+    if (!(msg->pc_content = (char *)malloc(msg->pc_size + 1)))
         fatal_error("Processed content memory allocation"); //TODO
-    bzero(msg->processed_content, (msg->pc_size + 1));
+    bzero(msg->pc_content, (msg->pc_size + 1));
 }
 
 void encode_msg_base64(t_message_base64 *msg)
@@ -113,7 +113,7 @@ void write_encoded(t_message_base64 *msg, t_args *args)
 
     for (; count < msg->pc_size; count++)
     {
-        write(msg->output_fd, &msg->processed_content[count], 1);
+        write(msg->output_fd, &msg->pc_content[count], 1);
         if (args->n == TRUE && count != 0 && (count + 1) % 64 == 0)
             write(msg->output_fd, "\n", 1);
     }
@@ -130,7 +130,7 @@ void process_encoding(t_message_base64 *msg, t_message_des *msg_des, t_args *arg
     encode_msg_base64(msg);
     if (args->algorithm == ALGO_DES)
     {
-        msg_des->output = msg->processed_content; //todo
+        msg_des->pc_content = msg->pc_content; //todo
         msg_des->pc_size = msg->pc_size;
     }
     if (args->algorithm == ALGO_BASE64)

@@ -26,11 +26,11 @@ int main(int argc, char **argv)
 {
     process_args(&argv[1], argc - 1);
 
-    // if (args->algorithm == ALGO_MD5)
-    //     des();
+    if (args->algorithm == ALGO_MD5)
+        md5();
     // else if (args->algorithm == ALGO_SHA256)
-    //     base64(NULL);  
-    if (args->algorithm == ALGO_BASE64)
+    //     sha256();  
+    else if (args->algorithm == ALGO_BASE64)
         base64(NULL);
     else if (args->algorithm == ALGO_DES)
         des();  

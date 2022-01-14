@@ -29,11 +29,14 @@ BASE_SRCS 		= 	args.c		\
 					binary.c	\
 					control.c	\
 					data.c		\
+					display.c	\
 					error.c		\
 					file.c		\
 					hash.c		\
 					main.c		\
-					option.c
+					option.c	\
+					padding.c	\
+					swap.c
 
 DES_SRCS 		= 	const.c		\
 					des.c		\
@@ -45,12 +48,12 @@ BASE64_SRCS 	=	base64.c	\
 					decode.c	\
 					encode.c
 
-MD5_SRCS 	=		auxiliary_function.c	\
+MD5_SRCS 	=		auxiliary_functions.c	\
 					const.c	\
 					digest.c	\
 					md5.c
 
-SHA256_SRCS 	=		auxiliary_function.c	\
+SHA256_SRCS 	=		auxiliary_functions.c	\
 					const.c	\
 					digest.c	\
 					sha256.c
@@ -72,8 +75,8 @@ all: $(FT_DES)
 # 	$(CC) $(FLAGS) $(BASE_OBJS) $(DES_OBJS) $(BASE64_OBJS) $(MD5_OBJS) $(SHA256_OBJS) -o $(FT_DES)
 # 	echo -e "$(GREEN)FT_DES DONE ✔$(RESET)"
 
-$(FT_DES):	$(BASE_OBJS) $(DES_OBJS) $(BASE64_OBJS) 
-	$(CC) $(FLAGS) $(BASE_OBJS) $(DES_OBJS) $(BASE64_OBJS)  -o $(FT_DES)
+$(FT_DES):	$(BASE_OBJS) $(DES_OBJS) $(BASE64_OBJS) $(MD5_OBJS)
+	$(CC) $(FLAGS) $(BASE_OBJS) $(DES_OBJS) $(BASE64_OBJS) $(MD5_OBJS) -o $(FT_DES)
 	echo -e "$(GREEN)FT_DES DONE ✔$(RESET)"
 
 $(BASE_OBJS): 	| $(BASE_DOBJS)

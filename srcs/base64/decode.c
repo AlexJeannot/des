@@ -84,9 +84,9 @@ void prepare_decoded_output(t_message_base64 *msg)
     msg->pc_size = msg->fc_size - (msg->fc_size / 4);
     msg->blocks_size = msg->pc_size / 3;
 
-    if (!(msg->processed_content = (char *)malloc(msg->pc_size + 1)))
+    if (!(msg->pc_content = (char *)malloc(msg->pc_size + 1)))
         fatal_error("Processed content memory allocation"); //TODO
-    bzero(msg->processed_content, (msg->pc_size + 1));
+    bzero(msg->pc_content, (msg->pc_size + 1));
 }
 
 void decode_msg_base64(t_message_base64 *msg)
@@ -95,7 +95,7 @@ void decode_msg_base64(t_message_base64 *msg)
 
     for (u_int64_t count = 0; count < msg->blocks_size; count++)
     {
-        block = (t_block *)msg->processed_content + count;
+        block = (t_block *)msg->pc_content + count;
 
         set_first_char(block, add_decoded_char(msg->fmt_content[count * 4]));
         set_second_char(block, add_decoded_char(msg->fmt_content[1 + count * 4]));
@@ -115,12 +115,12 @@ void decode_msg_base64(t_message_base64 *msg)
 void write_decoded(t_message_base64 *msg)
 {
     for (u_int64_t count = 0; count < msg->pc_size; count++)
-        write(msg->output_fd, &msg->processed_content[count], 1);
+        write(msg->output_fd, &msg->pc_content[count], 1);
 }
 
 void set_des_vars(t_message_base64 *msg, t_message_des *msg_des)
 {
-    msg_des->input = msg->processed_content;
+    msg_des->raw_content = msg->pc_content;
     msg_des->rc_size = msg->pc_size;
 }
 

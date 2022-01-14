@@ -72,7 +72,9 @@ u_int8_t    process_i(char *input, int32_t diff)
 {
     control_option("-i");
     if (!control_option_value(input, diff))
-        args_error("No file provided as input", NULL);
+        args_error("no file provided as input", NULL);
+    if (!is_hash_algorithm() && args->i == TRUE)
+        args_error("input file already provided", input);
     process_io(input, INPUT);
     return (1);
 }
@@ -81,8 +83,10 @@ u_int8_t    process_k(char *input, int32_t diff)
 {
     control_option("-k");
     if (!control_option_value(input, diff))
-        args_error("No hexadecimal key provided", NULL);
-    save_key(input, diff);
+        args_error("no hexadecimal key provided", NULL);
+    if (args->k == TRUE)
+        args_error("key hexadecimal already provided", NULL);
+    get_key(input);
     return (1);
 }
 
@@ -99,22 +103,27 @@ u_int8_t    process_o(char *input, int32_t diff)
 {
     control_option("-o");
     if (!control_option_value(input, diff))
-        args_error("No file provided as output", NULL);
+        args_error("no file provided as output", NULL);
+    if (!is_hash_algorithm() && args->o == TRUE)
+        args_error("output file already provided", input);
     process_io(input, OUTPUT);
     return (1);
 }
 
-u_int8_t    process_p(char *input, int32_t diff)
+u_int8_t    process_p(void)
 {
     control_option("-p");
-
-    (void)input;
-    (void)diff;
-    // if (!control_option_value(input, diff))
-    //     args_error("No file provided as output", NULL);
-    //TODO
-
-    return (1);
+    if (is_hash_algorithm())
+    {
+        if (args->p == TRUE)
+            args_error("Option provided twice", "-p");
+        args->p = TRUE;
+    }
+    else
+    {
+        //TODO
+    }
+    return (0);
 }
 
 u_int8_t    process_q(void)
@@ -140,7 +149,7 @@ u_int8_t    process_s(char *input, int32_t diff)
     control_option("-s");
     if (!control_option_value(input, diff))
         args_error("No string provided", NULL);
-    // TODO
+    process_string(input);
     return (1);
 }
 
@@ -170,7 +179,7 @@ u_int8_t    parse_options(char *input, char *next_input, int32_t args_diff)
         case ('k'): return(process_k(next_input, args_diff)); break;
         case ('n'): return(process_n()); break;
         case ('o'): return(process_o(next_input, args_diff)); break;
-        case ('p'): return(process_p(next_input, args_diff)); break;
+        case ('p'): return(process_p()); break;
         case ('q'): return(process_q()); break;
         case ('r'): return(process_r()); break;
         case ('s'): return(process_s(next_input, args_diff)); break;

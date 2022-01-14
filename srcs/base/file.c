@@ -17,19 +17,24 @@ void    bytes_join(t_data *current_data, char *buf, u_int64_t buf_length)
     current_data->rc_size += buf_length;
 }
 
-int32_t     get_file(char *file_path, u_int8_t type)
+int32_t     get_file(t_data *new_data, char *file_path, u_int8_t type)
 {
     int32_t fd;
 
     if (type == INPUT)
     {
         if ((fd = open(file_path, O_RDONLY)) == -1)
-            fatal_error("file opening");
+        {
+            if (is_hash_algorithm())
+                new_data->nofile = TRUE;
+            else
+                fatal_error("input file opening");
+        }
     }
     else
     {
         if ((fd = open(file_path, O_WRONLY | O_CREAT, 0644)) == -1)
-            fatal_error("file opening/creation");
+            fatal_error("output file opening/creation");
     }
     
     return (fd);
@@ -48,6 +53,17 @@ void get_file_content(t_data *current_data, int32_t fd)
     }
     if (ret == -1)
         fatal_error("file reading");
+}
+
+void        set_file_context(t_data *new_data, char *file_path)
+{
+    new_data->src_type = SRC_FILE;
+    
+    if (!(new_data->src = (char *)malloc(strlen(file_path) + 1)))
+        fatal_error("file source memory allocation");
+    bzero(new_data->src, (strlen(file_path) + 1));
+
+    strncpy(new_data->src, file_path, strlen(file_path));
 }
 
 // void get_content(t_data *data, t_args *args)

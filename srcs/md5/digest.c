@@ -48,7 +48,7 @@ static void process_round(t_buffers *buffers, u_int32_t block, u_int32_t round, 
     swap_buffers(buffers);
 }
 
-void        process_msg_md5(t_message *msg)
+void        process_msg_md5(t_message_hash *msg)
 {
     t_buffers   buffers;
     t_buffers   save_buffers;
