@@ -34,6 +34,6 @@ u_int32_t   bsig1(u_int32_t x);
 /*
 ** DIGEST.C
 */
-void        process_msg_sha256(t_message *msg);
+void        process_msg_sha256(t_message_hash *msg);
 
 #endif

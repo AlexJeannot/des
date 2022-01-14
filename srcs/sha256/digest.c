@@ -61,7 +61,7 @@ static void process_round(t_buffers *buffers, u_int32_t block, u_int32_t count)
     swap_buffers(buffers, t1, t2);
 }
 
-void        process_msg_sha256(t_message *msg)
+void        process_msg_sha256(t_message_hash *msg)
 {
     t_buffers   buffers;
     t_buffers   save_buffers;

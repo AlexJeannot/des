@@ -16,8 +16,6 @@ void    md5(void)
     t_data *tmp_data;
     t_message_hash msg;
 
-    bzero(&msg, sizeof(t_message_hash));
-
     tmp_data = data;
     while (tmp_data)
     {

@@ -1,7 +1,7 @@
 # VARIABLES
 GREEN 		= \033[38;5;40m
 RESET 		= \033[0m
-FT_DES 		= ft_des
+FT_SSL 		= ft_ssl
 
 # COMPILATION
 CC 		= gcc
@@ -22,11 +22,12 @@ BASE_DOBJS		= ./comp/base/
 DES_DOBJS	= ./comp/des/
 BASE64_DOBJS		= ./comp/base64/
 MD5_DOBJS	= ./comp/md5/
-sha256_DOBJS		= ./comp/sha256/
+SHA256_DOBJS		= ./comp/sha256/
 
 # SOURCES
 BASE_SRCS 		= 	args.c		\
 					binary.c	\
+					bits.c		\
 					control.c	\
 					data.c		\
 					display.c	\
@@ -68,16 +69,12 @@ SHA256_OBJS 		= $(SHA256_SRCS:%.c=$(SHA256_DOBJS)%.o)
 #HEADER FILE
 HEADER	=	./incs/des.h ./incs/base64.h ./incs/base.h ./incs/md5.h ./incs/sha256.h 
 
-all: $(FT_DES)
+all: $(FT_SSL)
 
 # COMPILATION
-# $(FT_DES):	$(BASE_OBJS) $(DES_OBJS) $(BASE64_OBJS) $(MD5_OBJS) $(SHA256_OBJS)
-# 	$(CC) $(FLAGS) $(BASE_OBJS) $(DES_OBJS) $(BASE64_OBJS) $(MD5_OBJS) $(SHA256_OBJS) -o $(FT_DES)
-# 	echo -e "$(GREEN)FT_DES DONE ✔$(RESET)"
-
-$(FT_DES):	$(BASE_OBJS) $(DES_OBJS) $(BASE64_OBJS) $(MD5_OBJS)
-	$(CC) $(FLAGS) $(BASE_OBJS) $(DES_OBJS) $(BASE64_OBJS) $(MD5_OBJS) -o $(FT_DES)
-	echo -e "$(GREEN)FT_DES DONE ✔$(RESET)"
+$(FT_SSL):	$(BASE_OBJS) $(DES_OBJS) $(BASE64_OBJS) $(MD5_OBJS) $(SHA256_OBJS)
+	$(CC) $(FLAGS) $(BASE_OBJS) $(DES_OBJS) $(BASE64_OBJS) $(MD5_OBJS) $(SHA256_OBJS) -o $(FT_SSL)
+	echo -e "$(GREEN)FT_SSL DONE ✔$(RESET)"
 
 $(BASE_OBJS): 	| $(BASE_DOBJS)
 $(DES_OBJS): | $(DES_DOBJS)
@@ -124,9 +121,9 @@ clean:
 	$(RM) ./comp
 
 fclean: clean
-	$(RM) $(FT_DES)
+	$(RM) $(FT_SSL)
 
 re: fclean all
 
 .PHONY: all clean fclean re
-.SILENT: all $(FT_DES)
+.SILENT: all $(FT_SSL)

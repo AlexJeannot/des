@@ -127,6 +127,13 @@ void get_hex_binary(char *input, char *output);
 void get_sbox_binary(u_int8_t input, char *output);
 
 /*
+** BITS.C
+*/
+u_int32_t           rotate_left(u_int32_t x, u_int32_t offset);
+u_int32_t           rotate_right(u_int32_t x, u_int32_t offset);
+u_int32_t           shift_right(u_int32_t x, u_int32_t offset);
+
+/*
 **  CONTROL.c
 */
 u_int8_t is_hexadecimal(char *input);
