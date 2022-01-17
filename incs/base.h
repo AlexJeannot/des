@@ -57,6 +57,34 @@ typedef struct  s_data
     struct s_data *next;
 }               t_data;
 
+typedef struct   s_derivated_key
+{
+    char *password;
+
+    char fmt_password[32];
+
+    
+    // char hash_password[8];
+    uint8_t password_length;
+    char salt[16];
+
+    char i_key_pad[32];
+    char o_key_pad[32];
+    char first_pass_input[40];
+    char second_pass_input[48];
+
+}               t_derivated_key;
+
+typedef struct  s_key
+{
+    char key[16]; // -k
+    char *hash_result;
+
+    t_derivated_key dkey;
+
+
+}               t_key;
+
 typedef struct  s_message_des
 {
     char *raw_content;
@@ -96,6 +124,7 @@ typedef struct  s_message_hash
 
 extern t_data *data;
 extern t_args *args;
+extern t_key *key;
 
 u_int8_t    parse_options(char *input, char *next_input, int32_t args_diff);
 u_int8_t is_hash_algorithm(void);

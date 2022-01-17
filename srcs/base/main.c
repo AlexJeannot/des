@@ -2,6 +2,7 @@
 
 t_data *data;
 t_args *args;
+t_key *key;
 
 void control_args(int argc)
 {
@@ -24,6 +25,10 @@ void process_other(void)
 
 int main(int argc, char **argv)
 {
+    data = NULL;
+    args = NULL;
+    key = NULL;
+
     process_args(&argv[1], argc - 1);
 
     if (args->algorithm == ALGO_MD5)

@@ -110,7 +110,7 @@ u_int8_t    process_o(char *input, int32_t diff)
     return (1);
 }
 
-u_int8_t    process_p(void)
+u_int8_t    process_p(char *input, int32_t diff)
 {
     control_option("-p");
     if (is_hash_algorithm())
@@ -121,7 +121,12 @@ u_int8_t    process_p(void)
     }
     else
     {
-        //TODO
+        if (!control_option_value(input, diff))
+            args_error("no password provided", NULL);
+        if (args->p == TRUE)
+            args_error("password already provided", NULL);
+        get_password(input);
+        return (1);
     }
     return (0);
 }
@@ -147,9 +152,21 @@ u_int8_t    process_r(void)
 u_int8_t    process_s(char *input, int32_t diff)
 {
     control_option("-s");
-    if (!control_option_value(input, diff))
-        args_error("No string provided", NULL);
-    process_string(input);
+        if (!control_option_value(input, diff))
+    if (is_hash_algorithm())
+    {
+        if (!control_option_value(input, diff))
+            args_error("No string provided", NULL);
+        process_string(input);
+    }
+    else
+    {
+        if (!control_option_value(input, diff))
+            args_error("no salt provided", NULL);
+        if (args->s == TRUE)
+            args_error("salt already provided", NULL);
+        get_salt(input);
+    }
     return (1);
 }
 

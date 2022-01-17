@@ -14,6 +14,13 @@ void allocate_args(void)
     bzero(args, sizeof(t_args));
 }
 
+void allocate_key(void)
+{
+    if (!(key = (t_key *)malloc(sizeof(t_key))))
+        fatal_error("argument structure memory allocation");
+    bzero(key, sizeof(t_key));
+}
+
 void process_string(char *input)
 {
     t_data   *new_data;
@@ -70,13 +77,53 @@ void get_key(char *key)
     if (!(is_hexadecimal(key)))
         args_error("Not a hexadecimal key provided", NULL);
 
+    if (!key)
+        allocate_key();
+
     if (strlen(key) > 16)
         printf("Hexadecimal key is too long, ignoring excess\n");
-    else if (strlen(key) > 16)
+    else if (strlen(key) < 16)
         printf("Hexadecimal key is too short, padding with zero bytes to length\n");
 
     strncpy(args->key, key, 16);
     args->k = TRUE;
+}
+
+void get_password(char *password)
+{
+    if (!key)
+        allocate_key();
+
+    key->password_length = (strlen(password) < 127) ? strlen(password) : 127;
+
+    if (key->password_length > 127)
+        printf("Password is too long (> 127 characters), ignoring excess\n");
+    else if (key->password_length < 32)
+        printf("Password is too short, padding with zero bytes to length\n");
+
+    if (!(key->password = (char *)malloc(key->password_length)))
+        fatal_error("string input memory allocation");
+    bzero(key->password, key->password_length);
+    strncpy(key->password, password, 127);
+
+    args->p = TRUE;
+}
+
+void get_salt(char *salt)
+{
+    if (!(is_hexadecimal(salt)))
+        args_error("Not a hexadecimal salt provided", NULL);
+
+    if (!key)
+        allocate_key();
+
+    if (strlen(salt) > 16)
+        printf("Password is too long, ignoring excess\n");
+    else if (strlen(salt) < 16)
+        printf("Password is too short, padding with zero bytes to length\n");
+
+    strncpy(key->salt, salt, 16);
+    args->s = TRUE;
 }
 
 
