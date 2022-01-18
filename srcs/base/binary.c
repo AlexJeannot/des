@@ -46,12 +46,9 @@ void get_string_binary(char *input, char *output, u_int64_t input_size, u_int64_
     }
 }
 
-void get_hex_binary(char *input, char *output)
+void get_hex_binary(char *input, char *output, u_int64_t input_size)
 {
-    u_int64_t size;
-    
-    size = (input && output) ? strlen(input) : 0;
-    for (u_int64_t count = 0; count < size; count++)
+    for (u_int64_t count = 0; count < input_size; count++)
     {
         switch(input[count])
         {

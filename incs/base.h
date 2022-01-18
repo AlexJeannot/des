@@ -61,15 +61,17 @@ typedef struct   s_derivated_key
 {
     char *password;
 
-    char fmt_password[32];
+    char fmt_password[64];
+    char hash_result[64];
+    // char i_key_pad[32];
 
     
     // char hash_password[8];
-    uint8_t password_length;
+    u_int8_t password_length;
     char salt[16];
 
-    char i_key_pad[32];
-    char o_key_pad[32];
+    char i_key_pad[64];
+    char o_key_pad[64];
     char first_pass_input[40];
     char second_pass_input[48];
 
@@ -142,6 +144,14 @@ void    format_msg(t_message_hash *msg, const u_int8_t swap);
 void    display_hash(const t_message_hash *msg);
 void    md5(void);
 void    build_hash(t_message_hash *msg, void *buffers, u_int32_t nb_words, const u_int8_t swap);
+void get_password(char *password);
+void get_salt(char *input_salt);
+void    sha256(t_data *current_data, char *output);
+void binary_str_to_str(char *binary_str, char *str, u_int64_t binary_size);
+void str_to_hex(char *str, char *hex_str, u_int64_t size);
+void pbkdf2(int dkey_length, int hash_length);
+void hex_to_str(char *hex_str, char *str, u_int64_t size);
+void print_bin(char *content, u_int64_t size);
 
 /*
 **  ARGS.c
@@ -152,7 +162,7 @@ void        process_args(char **list_args, int32_t nb_args);
 **  BINARY.c
 */
 void get_string_binary(char *input, char *output, u_int64_t input_size, u_int64_t output_size);
-void get_hex_binary(char *input, char *output);
+void get_hex_binary(char *input, char *output, u_int64_t input_size);
 void get_sbox_binary(u_int8_t input, char *output);
 
 /*

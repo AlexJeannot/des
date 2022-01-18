@@ -25,7 +25,8 @@ MD5_DOBJS	= ./comp/md5/
 SHA256_DOBJS		= ./comp/sha256/
 
 # SOURCES
-BASE_SRCS 		= 	args.c		\
+BASE_SRCS 		= 	annexe.c	\
+					args.c		\
 					binary.c	\
 					bits.c		\
 					control.c	\
@@ -37,6 +38,7 @@ BASE_SRCS 		= 	args.c		\
 					main.c		\
 					option.c	\
 					padding.c	\
+					pbkdf2.c	\
 					swap.c
 
 DES_SRCS 		= 	const.c		\

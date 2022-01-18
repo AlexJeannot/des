@@ -30,11 +30,11 @@ int main(int argc, char **argv)
     key = NULL;
 
     process_args(&argv[1], argc - 1);
-
-    if (args->algorithm == ALGO_MD5)
+    pbkdf2(8, 32);
+    if (args->algorithm == ALGO_MD5) // SWITCH
         md5();
-    // else if (args->algorithm == ALGO_SHA256)
-    //     sha256();  
+    else if (args->algorithm == ALGO_SHA256)
+        sha256(data, NULL);  
     else if (args->algorithm == ALGO_BASE64)
         base64(NULL);
     else if (args->algorithm == ALGO_DES)

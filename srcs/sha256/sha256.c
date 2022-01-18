@@ -11,9 +11,16 @@ static void retrieve_data(t_data *current_data, t_message_hash *msg)
 
 }
 
-void    sha256(t_data current_data, char *output)
+static void clean_msg(t_message_hash *msg)
+{
+    free(msg->fmt_content);
+    free(msg->hash);
+}
+
+void    sha256(t_data *current_data, char *output)
 {
     t_message_hash msg;
+
 
     while (current_data)
     {
@@ -23,11 +30,12 @@ void    sha256(t_data current_data, char *output)
             format_msg(&msg, TRUE);
             process_msg_sha256(&msg);
         }
+        display_hash(&msg);
         if (args->algorithm == ALGO_SHA256)
             display_hash(&msg);
         else
-            strncpy(output, msg->hash, 8);
-        // clean_msg(msg);
+            strncpy(output, msg.hash, 64);
+        clean_msg(&msg);
         current_data = current_data->next;
     }
 }

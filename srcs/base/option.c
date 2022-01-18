@@ -4,12 +4,14 @@ void control_option(char *option)
 {
     if (args->algorithm == ALGO_MD5)
     {
-        if (option[1] != 'p' && option[1] != 'q' && option[1] != 'r')
+        if (option[1] != 'p' && option[1] != 'q' && option[1] != 'r'
+            && option[1] != 's')
             args_error("Wrong option for MD5 algorithm", option);
     }
     else if (args->algorithm == ALGO_SHA256)
     {
-        if (option[1] != 'p' && option[1] != 'q' && option[1] != 'r')
+        if (option[1] != 'p' && option[1] != 'q' && option[1] != 'r'
+            && option[1] != 's')
             args_error("Wrong option for SHA256 algorithm", option);
     }
     else if (args->algorithm == ALGO_BASE64)
@@ -152,7 +154,6 @@ u_int8_t    process_r(void)
 u_int8_t    process_s(char *input, int32_t diff)
 {
     control_option("-s");
-        if (!control_option_value(input, diff))
     if (is_hash_algorithm())
     {
         if (!control_option_value(input, diff))
@@ -196,7 +197,7 @@ u_int8_t    parse_options(char *input, char *next_input, int32_t args_diff)
         case ('k'): return(process_k(next_input, args_diff)); break;
         case ('n'): return(process_n()); break;
         case ('o'): return(process_o(next_input, args_diff)); break;
-        case ('p'): return(process_p()); break;
+        case ('p'): return(process_p(next_input, args_diff)); break;
         case ('q'): return(process_q()); break;
         case ('r'): return(process_r()); break;
         case ('s'): return(process_s(next_input, args_diff)); break;

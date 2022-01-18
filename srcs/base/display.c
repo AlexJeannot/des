@@ -35,6 +35,7 @@ void    display_src(const t_message_hash *msg)
 
 void    display_hash(const t_message_hash *msg)
 {
+    printf("ENTREE DISPLAY HASH\n");
     if (msg->nofile) {
         printf("Error: no such file [%s]\n", msg->src);
         return ;

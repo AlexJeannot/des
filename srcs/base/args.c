@@ -72,57 +72,56 @@ void process_io(char *file_path, u_int8_t type)
     }
 }
 
-void get_key(char *key)
+void get_key(char *input_key)
 {
-    if (!(is_hexadecimal(key)))
+    if (!(is_hexadecimal(input_key)))
         args_error("Not a hexadecimal key provided", NULL);
 
     if (!key)
         allocate_key();
 
-    if (strlen(key) > 16)
+    if (strlen(input_key) > 16)
         printf("Hexadecimal key is too long, ignoring excess\n");
-    else if (strlen(key) < 16)
+    else if (strlen(input_key) < 16)
         printf("Hexadecimal key is too short, padding with zero bytes to length\n");
 
-    strncpy(args->key, key, 16);
+    strncpy(args->key, input_key, 16);
     args->k = TRUE;
 }
 
-void get_password(char *password)
+void get_password(char *input_password)
 {
     if (!key)
         allocate_key();
 
-    key->password_length = (strlen(password) < 127) ? strlen(password) : 127;
+    key->dkey.password_length = (strlen(input_password) < 127) ? strlen(input_password) : 127;
 
-    if (key->password_length > 127)
+    if (key->dkey.password_length > 127)
         printf("Password is too long (> 127 characters), ignoring excess\n");
-    else if (key->password_length < 32)
+    else if (key->dkey.password_length < 32)
         printf("Password is too short, padding with zero bytes to length\n");
 
-    if (!(key->password = (char *)malloc(key->password_length)))
+    if (!(key->dkey.password = (char *)malloc(key->dkey.password_length)))
         fatal_error("string input memory allocation");
-    bzero(key->password, key->password_length);
-    strncpy(key->password, password, 127);
+    strncpy(key->dkey.password, input_password, key->dkey.password_length);
 
     args->p = TRUE;
 }
 
-void get_salt(char *salt)
+void get_salt(char *input_salt)
 {
-    if (!(is_hexadecimal(salt)))
+    if (!(is_hexadecimal(input_salt)))
         args_error("Not a hexadecimal salt provided", NULL);
 
     if (!key)
         allocate_key();
 
-    if (strlen(salt) > 16)
-        printf("Password is too long, ignoring excess\n");
-    else if (strlen(salt) < 16)
-        printf("Password is too short, padding with zero bytes to length\n");
+    if (strlen(input_salt) > 16)
+        printf("Salt is too long, ignoring excess\n");
+    else if (strlen(input_salt) < 16)
+        printf("Salt is too short, padding with zero bytes to length\n");
 
-    strncpy(key->salt, salt, 16);
+    strncpy(key->dkey.salt, input_salt, 16);
     args->s = TRUE;
 }
 
