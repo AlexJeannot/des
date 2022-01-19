@@ -65,19 +65,3 @@ void        set_file_context(t_data *new_data, char *file_path)
 
     strncpy(new_data->src, file_path, strlen(file_path));
 }
-
-// void get_content(t_data *data, t_args *args)
-// {
-//     if (args->i == FALSE)
-//         get_file_content(data, args, STDIN_FILENO);
-//     else
-//         get_file_content(data, args, get_file(args, INPUT));
-// }
-
-// void add_output_fd(t_data *data, t_args *args)
-// {
-//     if (args->o == TRUE)
-//         data->output_fd = get_file(args, OUTPUT);
-//     else
-//         data->output_fd = 1;
-// }

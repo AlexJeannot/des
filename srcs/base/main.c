@@ -30,7 +30,6 @@ int main(int argc, char **argv)
     key = NULL;
 
     process_args(&argv[1], argc - 1);
-    pbkdf2(8, 32, 310000);
     if (args->algorithm == ALGO_MD5) // SWITCH
         md5();
     else if (args->algorithm == ALGO_SHA256)

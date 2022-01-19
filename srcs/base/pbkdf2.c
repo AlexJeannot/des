@@ -91,6 +91,7 @@ void pbkdf2(u_int32_t dkey_length, u_int32_t hash_length, u_int64_t round)
     bzero(complete_derived_key, hash_length * hash_length_block);
     dkey_count = 0;
 
+    printf("Creating key, please wait ...\n");
     prepare_hmac_sha256();
     for (u_int64_t count  = 0; count < hash_length_block; count++)
     {

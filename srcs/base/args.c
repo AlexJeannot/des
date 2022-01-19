@@ -42,7 +42,9 @@ void    process_stdin(void)
     t_data   *new_data;
 
     create_data(&new_data);
+    write(1, "Enter your input: ", 18);
     get_file_content(new_data, STDIN_FILENO);
+    write(1, "\n", 1);
     new_data->src_type = SRC_STDIN;
 
     new_data->next = data;
@@ -166,8 +168,48 @@ void        parse_args(char **list_args, int32_t nb_args)
         for (; index_args < nb_args; index_args++)
                 process_io(list_args[index_args], INPUT);
     }
-    if (is_stdin_process())
-        process_stdin();
+}
+
+void ask_password(void)
+{
+    char *first_input;
+    char *save_first_input;
+    char *second_input;
+
+    if (!(first_input = getpass("Enter DES encryption password:")))
+        fatal_error("user password request");
+
+    if (!(save_first_input = (char *)malloc(strlen(first_input) + 1)))
+        fatal_error("string input memory allocation");
+    bzero(save_first_input, strlen(first_input) + 1);
+    strncpy(save_first_input, first_input, strlen(first_input));
+
+    if (!(second_input = getpass("Verification - enter DES encryption password:")))
+        fatal_error("user password request");
+
+    if (strncmp(save_first_input, second_input, 127) != 0)
+    {
+        free(save_first_input);
+        fatal_error("password verification failure");
+    }
+
+    get_password(save_first_input);
+    free(save_first_input);
+}
+
+void create_salt(void)
+{
+    char        buf[8];
+    int32_t     fd;
+    ssize_t     ret;
+
+    bzero(&buf[0], 8);
+    if ((fd = open("/dev/urandom", O_RDONLY)) == -1)
+        fatal_error("random file opening");
+    if ((ret = read(fd, buf, 8)) == -1)
+        fatal_error("random file reading");
+    str_to_hex(buf, key->dkey.salt, 8);
+    args->s = TRUE;
 }
 
 void format_args(void)
@@ -175,6 +217,17 @@ void format_args(void)
     if (!(args->process_type))
         args->process_type = EN;
 
+    if (!is_hash_algorithm() && args->k == FALSE)
+    {
+        if (args->p == FALSE)
+            ask_password();
+        if (args->s == FALSE)
+            create_salt();
+        pbkdf2(8, 32, 310000);
+    }
+
+    if (is_stdin_process())
+        process_stdin();
 }
 
 void        process_args(char **list_args, int32_t nb_args)

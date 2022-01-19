@@ -40,7 +40,6 @@ void str_to_hex(char *str, char *hex_str, u_int64_t size)
 
 void PBKDF2_HMAC_SHA_256(const char* pass, const unsigned char* salt, int32_t iterations, uint32_t outputBytes)
  {
-    //  unsigned int i;
     unsigned char digest[outputBytes];
     char hex_digest[outputBytes * 2];
 
