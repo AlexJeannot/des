@@ -25,6 +25,9 @@
 # define SRC_FILE 12
 # define SRC_ARG 13
 
+# define HMAC_FIRST 14
+# define HMAC_SECOND 15
+
 typedef struct s_args
 {
     u_int8_t algorithm;
@@ -149,7 +152,7 @@ void get_salt(char *input_salt);
 void    sha256(t_data *current_data, char *output);
 void binary_str_to_str(char *binary_str, char *str, u_int64_t binary_size);
 void str_to_hex(char *str, char *hex_str, u_int64_t size);
-void pbkdf2(int dkey_length, int hash_length);
+void pbkdf2(u_int32_t dkey_length, u_int32_t hash_length, u_int64_t round);
 void hex_to_str(char *hex_str, char *str, u_int64_t size);
 void print_bin(char *content, u_int64_t size);
 
