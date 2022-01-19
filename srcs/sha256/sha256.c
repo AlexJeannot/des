@@ -30,7 +30,7 @@ void    sha256(t_data *current_data, char *output)
             format_msg(&msg, TRUE);
             process_msg_sha256(&msg);
         }
-        display_hash(&msg);
+        //display_hash(&msg);
         if (args->algorithm == ALGO_SHA256)
             display_hash(&msg);
         else

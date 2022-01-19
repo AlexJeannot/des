@@ -1,34 +1,7 @@
-#include "../../incs/base.h"
-
-void binary_str_to_str(char *binary_str, char *str, u_int64_t binary_size)
-{
-    u_int64_t size;
-
-    size = binary_size / 8;
-    for (u_int64_t bytes = 0; bytes < size; bytes++)
-    {
-        for (int bits = 0; bits < 8; bits++)
-        {
-            str[bytes] = str[bytes] << 1;
-            str[bytes] = str[bytes] | (binary_str[(bytes * 8) + bits] - 48);
-        }
-    }
-}
-
-void print_bin(char *content, u_int64_t size)
-{
-    for (u_int64_t bytes = 0; bytes < size; bytes++)
-    {
-        for (int64_t bits = 7; bits >= 0; bits--)
-        {
-            printf("%c", (((content[bytes] >> bits) & 1) + 48));
-
-        }
-        printf(" ");
-        if (bytes + 1 == 8)
-            printf("\n");
-    }
-}
+#include <openssl/evp.h>
+#include <openssl/sha.h>
+// crypto.h used for the version
+#include <openssl/crypto.h>
 
 char get_hex_char(u_int8_t input)
 {
@@ -65,11 +38,24 @@ void str_to_hex(char *str, char *hex_str, u_int64_t size)
     }
 }
 
-void hex_to_str(char *hex_str, char *str, u_int64_t hex_size)
-{
-    char tmp[hex_size * 4];
+void PBKDF2_HMAC_SHA_256(const char* pass, const unsigned char* salt, int32_t iterations, uint32_t outputBytes)
+ {
+    //  unsigned int i;
+    unsigned char digest[outputBytes];
+    char hex_digest[outputBytes * 2];
 
-    bzero(tmp, hex_size * 4);
-    get_hex_binary(hex_str, tmp, hex_size);
-    binary_str_to_str(tmp, str, hex_size * 4);
+    PKCS5_PBKDF2_HMAC(pass, strlen(pass), salt, 8, iterations, EVP_sha256(), outputBytes, digest);
+
+    bzero(hex_digest, outputBytes * 2);
+    str_to_hex((char *)digest, hex_digest, outputBytes);
+    write(1, hex_digest, outputBytes * 2);
+ }
+
+int main(void)
+{
+     const unsigned char salt[8] = "AAAABBBB";
+     const char password[8] = "password";
+     int32_t round = 10000;
+
+    PBKDF2_HMAC_SHA_256(password, salt, round, 8);  
 }

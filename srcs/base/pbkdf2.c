@@ -8,9 +8,7 @@ void prepare_hmac_sha256(void)
     memset(opad, 0x5c, 64);
     memset(ipad, 0x36, 64);
 
-    // print_bin(opad, 64);
     bzero(key->dkey.fmt_password, 64);
-    // FORMAT PASSWORD
     if (key->dkey.password_length <= 64)
         strncpy(key->dkey.fmt_password, key->dkey.password, 64);
     else
@@ -73,12 +71,6 @@ void hmac_sha256(char *round_key, char *message, u_int8_t msg_length)
     hex_to_str(key->dkey.hash_result, second_pass_result, 64);
 
     memcpy(&round_key[0], &second_pass_result[0], 32);
-
-    char result[64];
-
-    bzero(result, 64);
-    str_to_hex(round_key, result, 32);
-    write(1, result, 64);
 }
 
 void func(char *partial_derived_key, u_int64_t round)
@@ -86,16 +78,15 @@ void func(char *partial_derived_key, u_int64_t round)
     char round_key[32];
     bzero(round_key, 32);
 
-    // char first_msg[12];
-    // bzero(first_msg, 12);
-    char first_msg[8];
-    bzero(first_msg, 8);
+    char first_msg[12];
+    bzero(first_msg, 12);
     hex_to_str(key->dkey.salt, first_msg, 16);
-
+    printf("first_msg = %s\n", first_msg);
+    first_msg[11] = 0b00000001;
     for (u_int64_t count = 0; count < round; count++)
     {
         if (count == 0)
-            hmac_sha256(round_key, first_msg, 8); //to change
+            hmac_sha256(round_key, first_msg, 12);
         else
             hmac_sha256(round_key, round_key, 32);
         
@@ -104,9 +95,11 @@ void func(char *partial_derived_key, u_int64_t round)
     }
 }
 
+
+
 void pbkdf2(int dkey_length, int hash_length)
 {
-    int round = 1;
+    int round = 1000;
     int dk_count = 0;
     int l = (dkey_length % hash_length == 0) ? dkey_length / hash_length : (dkey_length / hash_length) + 1;
     char partial_derived_key[hash_length];
@@ -130,8 +123,6 @@ void pbkdf2(int dkey_length, int hash_length)
 
     bzero(result, 64);
     str_to_hex(complete_derived_key, result, 32);
-
-    // strncpy(key->key, result, 16);
-    // write(1, key->key, 16);
-    
+    write(1, result, 64);
+    write(1, "\n", 1);
 }

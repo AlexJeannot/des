@@ -116,5 +116,5 @@ void des(void)
             execute_round(&block, &keys, round);
         increment_output(args, &msg, &block, &msg.pc_content[block_index * 8], TRUE); //todo
     }
-    write_output(data, args, &msg);
+    //write_output(data, args, &msg);
 }
