@@ -89,13 +89,29 @@ static void retrieve_data(t_message_des *msg, t_keys *keys)
     }
     strncpy(keys->origin_key, args->key, 16);
     msg->output_fd = args->output_fd;
-    msg->block_number = (msg->rc_size % 8 == 0) ? msg->rc_size / 8 : (msg->rc_size / 8) + 1;
+
+    if (args->process_type == ENCRYPTION)
+    {
+        msg->block_number = (msg->rc_size / 8) + 1;
+        msg->is_last_block_empty = (msg->rc_size % 8 == 0) ? TRUE : FALSE;
+        msg->fc_size = msg->rc_size + (8 - msg->rc_size);
+    }
+    else
+    {
+        msg->block_number = (msg->rc_size % 8 == 0) ? (msg->rc_size / 8) : (msg->rc_size / 8)+ 1;
+    }
 }
 
 void prepare_output(t_message_des *msg)
 {
-    if (!(msg->pc_content = (char *)malloc(msg->rc_size)))
+    if (!(msg->pc_content = (char *)malloc(msg->fc_size)))
         fatal_error("Processed content memory allocation");
+}
+
+static void clean_msg(t_message_des *msg)
+{
+    if (msg->pc_content)
+        free(msg->pc_content);
 }
 
 void des(void)
@@ -119,4 +135,5 @@ void des(void)
         increment_output(args, &msg, &block, &msg.pc_content[block_index * 8], TRUE); //todo
     }
     write_output(data, args, &msg);
+    clean_msg(&msg);
 }

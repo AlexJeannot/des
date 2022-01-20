@@ -10,11 +10,14 @@
 
 # define FALSE 0
 # define TRUE 1
+
 # define INPUT 2
 # define OUTPUT 3
+
 # define ERROR 4
-# define EN 5 // ENCRYPTION/ENCODING
-# define DE 6 // DECRYPTION/DECODING
+
+# define EN 5
+# define DE 6
 
 # define ALGO_DES 7
 # define ALGO_BASE64 8
@@ -97,9 +100,11 @@ typedef struct  s_message_des
     char *pc_content;
     char    prev_block[64];
     u_int64_t rc_size;
+    u_int64_t fc_size;
     u_int64_t pc_size;
     int32_t output_fd;
     u_int64_t block_number;
+    u_int8_t is_last_block_empty;
 }               t_message_des;
 
 typedef struct  s_message_base64
@@ -135,8 +140,6 @@ extern t_key *key;
 
 u_int8_t    parse_options(char *input, char *next_input, int32_t args_diff);
 u_int8_t is_hash_algorithm(void);
-void create_data(t_data **new_data);
-void organize_data(t_data *new_data);
 int32_t     get_file(t_data *new_data, char *file_path, u_int8_t type);
 void process_io(char *file_path, u_int8_t type);
 void get_key(char *key);
@@ -158,6 +161,7 @@ void pbkdf2(u_int32_t dkey_length, u_int32_t hash_length, u_int64_t round);
 void hex_to_str(char *hex_str, char *str, u_int64_t size);
 void print_bin(char *content, u_int64_t size);
 void get_initial_vector(char *input_iv);
+u_int8_t is_last_block(u_int64_t total_block, u_int64_t current_block);
 
 /*
 **  ANNEXE.C
@@ -166,6 +170,7 @@ void get_initial_vector(char *input_iv);
 /*
 **  ARGS.C
 */
+void clean_args(void);
 void        process_args(char **list_args, int32_t nb_args);
 
 /*
@@ -191,6 +196,9 @@ u_int8_t base64_option(void);
 /*
 **  DATA.C
 */
+void clean_data(void);
+void create_data(t_data **new_data);
+void organize_data(t_data *new_data);
 
 /*
 **  DISPLAY.C

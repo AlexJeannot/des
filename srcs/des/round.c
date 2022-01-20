@@ -3,7 +3,12 @@
 void prepare_rounds(t_message_des *msg, t_block *block, u_int64_t block_index)
 {
     bzero(block, sizeof(t_block));
-    get_string_binary(&msg->raw_content[block_index * 8], &block->raw[0], msg->rc_size, 8);
+
+    if (is_last_block(msg->block_number, block_index) && msg->is_last_block_empty)
+        get_string_binary("", &block->raw[0], msg->rc_size, 8);
+    else
+        get_string_binary(&msg->raw_content[block_index * 8], &block->raw[0], msg->rc_size, 8);
+
     msg->rc_size -= 8;
 
     if (args->mode == MODE_CBC)

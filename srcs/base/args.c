@@ -14,6 +14,12 @@ void allocate_args(void)
     bzero(args, sizeof(t_args));
 }
 
+void clean_args(void)
+{
+    if (args)
+        free(args);
+}
+
 void process_string(char *input)
 {
     t_data   *new_data;

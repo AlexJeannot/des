@@ -2,18 +2,18 @@
 
 void    bytes_join(t_data *current_data, char *buf, u_int64_t buf_length)
 {
-    char    *new_msg;
+    char    *new_content;
 
-    if (!(new_msg = (char *)malloc(current_data->rc_size + buf_length)))
+    if (!(new_content = (char *)malloc(current_data->rc_size + buf_length)))
         fatal_error("File bytes memory allocation");
-    bzero(new_msg, (current_data->rc_size + buf_length));
+    bzero(new_content, (current_data->rc_size + buf_length));
 
-    memcpy(new_msg, current_data->input, current_data->rc_size);
-    memcpy(&(new_msg[current_data->rc_size]), buf, buf_length);
+    memcpy(new_content, current_data->input, current_data->rc_size);
+    memcpy(&(new_content[current_data->rc_size]), buf, buf_length);
 
     if (current_data->input)
         free(current_data->input);
-    current_data->input = new_msg;
+    current_data->input = new_content;
     current_data->rc_size += buf_length;
 }
 

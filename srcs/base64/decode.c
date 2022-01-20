@@ -118,7 +118,7 @@ void write_decoded(t_message_base64 *msg)
         write(msg->output_fd, &msg->pc_content[count], 1);
 }
 
-void set_des_vars(t_message_base64 *msg, t_message_des *msg_des)
+static void set_des_vars(t_message_base64 *msg, t_message_des *msg_des)
 {
     msg_des->raw_content = msg->pc_content;
     msg_des->rc_size = msg->pc_size;

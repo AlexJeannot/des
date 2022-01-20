@@ -30,6 +30,13 @@ void print_bin(char *content, u_int64_t size)
     }
 }
 
+u_int8_t is_last_block(u_int64_t total_block, u_int64_t current_block)
+{
+    if (total_block == (current_block + 1))
+        return (TRUE);
+    return (FALSE);
+}
+
 char get_hex_char(u_int8_t input)
 {
         switch(input)

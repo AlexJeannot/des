@@ -121,7 +121,11 @@ void write_encoded(t_message_base64 *msg, t_args *args)
         write(msg->output_fd, "\n", 1);
 }
 
-
+static void set_des_vars(t_message_base64 *msg, t_message_des *msg_des)
+{
+    msg_des->pc_content = msg->pc_content;
+    msg_des->pc_size = msg->pc_size;
+}
 
 void process_encoding(t_message_base64 *msg, t_message_des *msg_des, t_args *args)
 {
@@ -129,10 +133,7 @@ void process_encoding(t_message_base64 *msg, t_message_des *msg_des, t_args *arg
     prepare_encoded_output(msg);
     encode_msg_base64(msg);
     if (args->algorithm == ALGO_DES)
-    {
-        msg_des->pc_content = msg->pc_content; //todo
-        msg_des->pc_size = msg->pc_size;
-    }
+        set_des_vars(msg, msg_des);
     if (args->algorithm == ALGO_BASE64)
         write_encoded(msg, args);
 }

@@ -1,5 +1,21 @@
 #include "../../incs/des.h"
 
+void clean_data(void)
+{
+    t_data *tmp_data;
+
+    while(data)
+    {
+        tmp_data = data;
+        if (data->input)
+            free(data->input);
+        if (data->src)
+            free(data->src);
+        data = data->next;
+        free(tmp_data);
+    }
+}
+
 void create_data(t_data **new_data)
 {
     if (!(*new_data = (t_data *)malloc(sizeof(t_data))))

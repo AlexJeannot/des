@@ -85,6 +85,13 @@ void allocate_key(void)
     bzero(key, sizeof(t_key));
 }
 
+void clean_key(void)
+{
+    if (key->dkey.password)
+        free(key->dkey.password);
+    free(key);
+}
+
 void get_key(char *input_key)
 {
     u_int64_t input_size;
