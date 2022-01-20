@@ -46,6 +46,9 @@ void increment_output(t_args *args, t_message_des *msg, t_block *block, char *ou
     strncpy(&block->processed[32], &block->right[0], 32);
     permute(&block->processed[0], &block->permuted[0], &final_permutation[0], 64);
 
+    if (args->mode == MODE_CBC)
+        strncpy(&msg->prev_block[0], &block->permuted[0], 64);
+    
     for (int bytes = 0; bytes < 8; bytes++)
     {
         for (int bits = 0; bits < 8; bits++)
@@ -68,12 +71,11 @@ void write_output(t_data *data, t_args *args, t_message_des *msg)
         data->rc_size = msg->pc_size;
         base64(msg);
     }
-
     if (write(msg->output_fd, &msg->pc_content[0], msg->pc_size) == -1)
-        fatal_error("Output writing on file descriptor"); //TODO
+        fatal_error("Output writing on file descriptor");
     if (base64_option() && args->process_type == ENCRYPTION)
         if (write(msg->output_fd, "\n", 1) == -1)
-            fatal_error("Output writing on file descriptor"); //TODO
+            fatal_error("Output writing on file descriptor");
 }
 
 static void retrieve_data(t_message_des *msg, t_keys *keys)
@@ -111,10 +113,10 @@ void des(void)
 
     for (u_int64_t block_index = 0; block_index < msg.block_number; block_index++)
     {
-        prepare_rounds(&msg, &block, &msg.raw_content[block_index * 8]);
+        prepare_rounds(&msg, &block, block_index);
         for (u_int8_t round = 0; round < 16; round++)
             execute_round(&block, &keys, round);
         increment_output(args, &msg, &block, &msg.pc_content[block_index * 8], TRUE); //todo
     }
-    //write_output(data, args, &msg);
+    write_output(data, args, &msg);
 }

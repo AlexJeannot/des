@@ -1,13 +1,18 @@
 #include "../../incs/des.h"
 
-void prepare_rounds(t_message_des *msg, t_block *block, char *input)
+void prepare_rounds(t_message_des *msg, t_block *block, u_int64_t block_index)
 {
     bzero(block, sizeof(t_block));
-    get_string_binary(input, &block->raw[0], msg->rc_size, 8);
+    get_string_binary(&msg->raw_content[block_index * 8], &block->raw[0], msg->rc_size, 8);
     msg->rc_size -= 8;
+
+    if (args->mode == MODE_CBC)
+        xor_plaintext(msg, block, block_index);
+
     permute(&block->raw[0], &block->permuted[0], &initial_permutation[0], 64);
     strncpy(&block->left[0], &block->permuted[0], 32);
     strncpy(&block->right[0], &block->permuted[32], 32);
+
 }
 
 void s_box(char *xored, char *s_boxed)

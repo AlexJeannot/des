@@ -50,13 +50,12 @@ void xor_bits_string(char *first, char *second, char *output, u_int64_t size);
 /*
 **  ROUND.c
 */
-void prepare_rounds(t_message_des *msg, t_block *block, char *input);
+void prepare_rounds(t_message_des *msg, t_block *block, u_int64_t block_index);
 void execute_round(t_block *block, t_keys *keys, u_int8_t round);
 
 
 
-
-
+void xor_plaintext(t_message_des *msg, t_block *block, u_int64_t block_index);
 void print_binary_str(char *str, char *type, int size);
 
 #endif

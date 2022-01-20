@@ -1,1 +1,20 @@
 ABCDEFGH
+
+void prepare_rounds(t_message_des *msg, t_block *block, u_int64_t block_index)
+{
+    bzero(block, sizeof(t_block));
+    write(1, &msg->raw_content[block_index * 8], 8);
+    get_string_binary(&msg->raw_content[block_index * 8], &block->raw[0], msg->rc_size, 8);
+    msg->rc_size -= 8;
+
+    if (args->mode == MODE_CBC)
+    {
+        if (block_index == 0)
+            get_hex_binary(args->iv, &msg->prev_block[0], 16);
+        xor_bits_string(&block->raw[0], &msg->prev_block[0], &block->raw[0], 32);
+    }
+
+    permute(&block->raw[0], &block->permuted[0], &initial_permutation[0], 64);
+    strncpy(&block->left[0], &block->permuted[0], 32);
+    strncpy(&block->right[0], &block->permuted[32], 32);
+}

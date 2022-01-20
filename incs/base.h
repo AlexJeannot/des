@@ -28,10 +28,14 @@
 # define HMAC_FIRST 14
 # define HMAC_SECOND 15
 
+# define MODE_ECB 16
+# define MODE_CBC 17
+
 typedef struct s_args
 {
     u_int8_t algorithm;
     u_int8_t process_type;
+    u_int8_t mode;
 
     u_int8_t a;
     u_int8_t d;
@@ -47,6 +51,7 @@ typedef struct s_args
     u_int8_t v;
 
     char key[16];
+    char iv[16];
     int32_t output_fd;
 }   t_args;
 
@@ -82,18 +87,15 @@ typedef struct   s_derivated_key
 
 typedef struct  s_key
 {
-    char key[16]; // -k
-    char *hash_result;
-
+    char key[16];
     t_derivated_key dkey;
-
-
 }               t_key;
 
 typedef struct  s_message_des
 {
     char *raw_content;
     char *pc_content;
+    char    prev_block[64];
     u_int64_t rc_size;
     u_int64_t pc_size;
     int32_t output_fd;
@@ -155,14 +157,19 @@ void str_to_hex(char *str, char *hex_str, u_int64_t size);
 void pbkdf2(u_int32_t dkey_length, u_int32_t hash_length, u_int64_t round);
 void hex_to_str(char *hex_str, char *str, u_int64_t size);
 void print_bin(char *content, u_int64_t size);
+void get_initial_vector(char *input_iv);
 
 /*
-**  ARGS.c
+**  ANNEXE.C
+*/
+
+/*
+**  ARGS.C
 */
 void        process_args(char **list_args, int32_t nb_args);
 
 /*
-**  BINARY.c
+**  BINARY.C
 */
 void get_string_binary(char *input, char *output, u_int64_t input_size, u_int64_t output_size);
 void get_hex_binary(char *input, char *output, u_int64_t input_size);
@@ -176,23 +183,65 @@ u_int32_t           rotate_right(u_int32_t x, u_int32_t offset);
 u_int32_t           shift_right(u_int32_t x, u_int32_t offset);
 
 /*
-**  CONTROL.c
+**  CONTROL.C
 */
 u_int8_t is_hexadecimal(char *input);
 u_int8_t base64_option(void);
 
 /*
-**  ERROR.c 
+**  DATA.C
+*/
+
+/*
+**  DISPLAY.C
+*/
+
+
+/*
+**  ERROR.C
 */
 void    fatal_error(const char *reason);
 void    args_error(const char *reason, const char *input);
 
 
 /*
-**  FILE.c
+**  FILE.C
 */
 // void get_content(t_data *data, t_args *args);
 void get_file_content(t_data *current_data, int32_t fd);
+
+/*
+**  HASH.C
+*/
+
+/*
+**  MODE.C
+*/
+void get_initial_vector(char *input_iv);
+void create_initial_vector(void);
+void get_operation_mode(char *input);
+
+/*
+**  OPTION.C
+*/
+
+/*
+**  PADDING.C
+*/
+
+/*
+**  PBKDF2.C
+*/
+
+/*
+** SECRET.C
+*/
+void ask_password(void);
+void get_password(char *input_password);
+void create_salt(void);
+void get_salt(char *input_salt);
+void allocate_key(void);
+void get_key(char *input_key);
 
 
 /*

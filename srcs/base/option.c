@@ -171,14 +171,15 @@ u_int8_t    process_s(char *input, int32_t diff)
     return (1);
 }
 
-u_int8_t    process_v(void)
+u_int8_t    process_v(char *input, int32_t diff)
 {
     control_option("-v");
+    if (!control_option_value(input, diff))
+        args_error("No string provided", NULL);
     if (args->v == TRUE)
         args_error("Option provided twice", "-v");
-    args->v = TRUE;
-    // TODO
-    return (0);
+    get_initial_vector(input);
+    return (1);
 }
 
 u_int8_t    parse_options(char *input, char *next_input, int32_t args_diff)
@@ -201,6 +202,7 @@ u_int8_t    parse_options(char *input, char *next_input, int32_t args_diff)
         case ('q'): return(process_q()); break;
         case ('r'): return(process_r()); break;
         case ('s'): return(process_s(next_input, args_diff)); break;
+        case ('v'): return(process_v(next_input, args_diff)); break;
         default:    args_error("Wrong option provided", input);
     }
 

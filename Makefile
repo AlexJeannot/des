@@ -36,9 +36,11 @@ BASE_SRCS 		= 	annexe.c	\
 					file.c		\
 					hash.c		\
 					main.c		\
+					mode.c		\
 					option.c	\
 					padding.c	\
 					pbkdf2.c	\
+					secret.c	\
 					swap.c
 
 DES_SRCS 		= 	const.c		\
