@@ -63,7 +63,7 @@ void    create_salt(void)
 void    get_salt(char *input_salt)
 {
     if (!(is_hexadecimal(input_salt)))
-        args_error("Not a hexadecimal salt provided", NULL);
+        args_error("not a hexadecimal salt provided", NULL);
 
     if (!key)
         allocate_key();
@@ -96,7 +96,7 @@ void    get_key(char *input_key)
     u_int64_t   input_size;
 
     if (!(is_hexadecimal(input_key)))
-        args_error("Not a hexadecimal key provided", NULL);
+        args_error("not a hexadecimal key provided", NULL);
 
     if (!key)
         allocate_key();

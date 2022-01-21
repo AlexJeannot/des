@@ -76,18 +76,15 @@ typedef struct  s_data
 
 typedef struct   s_derivated_key
 {
-    char *password;
-    char fmt_password[64];
-    u_int8_t password_length;
-    char salt[16];
+    char        *password;
+    char        fmt_password[64];
+    u_int8_t    password_length;
+    char        salt[16];
 
-    char hash_result[64];
+    char        hash_result[64];
 
-    char i_key_pad[64];
-    char o_key_pad[64];
-    char first_pass_input[40]; //
-    char second_pass_input[48]; //
-
+    char        i_key_pad[64];
+    char        o_key_pad[64];
 }               t_derivated_key;
 
 typedef struct  s_key
@@ -105,7 +102,6 @@ typedef struct  s_message_des
     u_int64_t   fc_size;
     u_int64_t   pc_size;
 
-    int32_t output_fd; //
     u_int64_t   block_number;
     u_int8_t    is_last_block_empty;
     char        prev_block[64];
@@ -123,7 +119,6 @@ typedef struct  s_message_base64
     u_int64_t           cc_size;
 
     u_int64_t           blocks_size;
-    int32_t             output_fd; //
 }               t_message_base64;
 
 typedef struct  s_message_hash

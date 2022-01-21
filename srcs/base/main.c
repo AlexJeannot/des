@@ -11,7 +11,7 @@ void    init_global_variables(void)
     key = NULL;
 }
 
-int32_t main(int argc, char **argv)
+int32_t main(int32_t argc, char **argv)
 {
     init_global_variables();
     process_args(&argv[1], argc - 1);

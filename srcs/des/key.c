@@ -1,6 +1,6 @@
 #include "../../incs/des.h"
 
-u_int8_t    shift_number(int round)
+u_int8_t    shift_number(u_int8_t round)
 {
     if (round == 1 || round == 2 || round == 9 || round == 16)
         return (1);

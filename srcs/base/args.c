@@ -18,6 +18,7 @@ void        clean_args(void)
 {
     if (args)
         free(args);
+    close(args->output_fd);
 }
 
 void        get_algorithm(char *input)

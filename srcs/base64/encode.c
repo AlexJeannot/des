@@ -74,7 +74,7 @@ void        prepare_encoded_output(t_message_base64 *msg)
     msg->blocks_size = msg->fc_size / 3;
 
     if (!(msg->pc_content = (char *)malloc(msg->pc_size + 1)))
-        fatal_error("Processed content memory allocation"); //TODO
+        fatal_error("processed content memory allocation"); //TODO
     bzero(msg->pc_content, (msg->pc_size + 1));
 }
 
@@ -114,12 +114,12 @@ void        write_encoded(t_message_base64 *msg, t_args *args)
     count = 0;
     for (; count < msg->pc_size; count++)
     {
-        write(msg->output_fd, &msg->pc_content[count], 1);
+        write(args->output_fd, &msg->pc_content[count], 1);
         if (args->n == TRUE && count != 0 && (count + 1) % 64 == 0)
-            write(msg->output_fd, "\n", 1);
+            write(args->output_fd, "\n", 1);
     }
     if (args->n == FALSE || (count + 1) % 64 != 0)
-        write(msg->output_fd, "\n", 1);
+        write(args->output_fd, "\n", 1);
 }
 
 static void set_des_vars(t_message_base64 *msg, t_message_des *msg_des)

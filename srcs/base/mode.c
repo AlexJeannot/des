@@ -5,7 +5,7 @@ void    get_initial_vector(char *input_iv)
     u_int64_t   input_size;
 
     if (!(is_hexadecimal(input_iv)))
-        args_error("Not a hexadecimal initialization vector provided", NULL);
+        args_error("not a hexadecimal initialization vector provided", NULL);
 
     input_size = strlen(input_iv);
     if (input_size > 16)
@@ -46,7 +46,7 @@ void    get_operation_mode(char *input)
             args->mode = MODE_CBC;
     }
     if (args->mode == FALSE)
-        args_error("Wrong operation mode provided", input);
+        args_error("wrong operation mode provided", input);
 }
 
 void    xor_plaintext(t_message_des *msg, t_block *block, u_int64_t block_index)

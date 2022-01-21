@@ -3,7 +3,7 @@
 void    prepare_output(t_message_des *msg)
 {
     if (!(msg->pc_content = (char *)malloc(msg->fc_size)))
-        fatal_error("Processed content memory allocation");
+        fatal_error("processed content memory allocation");
 }
 
 void    increment_output(t_args *args, t_message_des *msg, t_block *block, char *output, u_int8_t is_last_block)
@@ -17,9 +17,9 @@ void    increment_output(t_args *args, t_message_des *msg, t_block *block, char 
     if (args->mode == MODE_CBC)
         strncpy(&msg->prev_block[0], &block->permuted[0], 64);
     
-    for (int bytes = 0; bytes < 8; bytes++)
+    for (u_int8_t bytes = 0; bytes < 8; bytes++)
     {
-        for (int bits = 0; bits < 8; bits++)
+        for (u_int8_t bits = 0; bits < 8; bits++)
         {
             output[bytes] = output[bytes] << 1;
             output[bytes] = output[bytes] | (block->permuted[(bytes * 8) + bits] - 48);
@@ -39,10 +39,10 @@ void    write_output(t_data *data, t_args *args, t_message_des *msg)
         data->rc_size = msg->pc_size;
         base64(msg);
     }
-    if (write(msg->output_fd, &msg->pc_content[0], msg->pc_size) == -1)
-        fatal_error("Output writing on file descriptor");
+    if (write(args->output_fd, &msg->pc_content[0], msg->pc_size) == -1)
+        fatal_error("output writing on file descriptor");
     if (base64_option() && args->process_type == ENCRYPTION)
-        if (write(msg->output_fd, "\n", 1) == -1)
-            fatal_error("Output writing on file descriptor");
+        if (write(args->output_fd, "\n", 1) == -1)
+            fatal_error("output writing on file descriptor");
 }
 

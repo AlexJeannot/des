@@ -7,7 +7,7 @@ void    bin_str_to_str(char *binary_str, char *str, u_int64_t binary_size)
     size = binary_size / 8;
     for (u_int64_t bytes = 0; bytes < size; bytes++)
     {
-        for (int bits = 0; bits < 8; bits++)
+        for (u_int8_t bits = 0; bits < 8; bits++)
         {
             str[bytes] = str[bytes] << 1;
             str[bytes] = str[bytes] | (binary_str[(bytes * 8) + bits] - 48);
@@ -28,7 +28,7 @@ void    str_to_bin_str(char *input, char *output, u_int64_t input_size, u_int64_
             return ;
         }
 
-        for (int bits = 7; bits >= 0; bits--)
+        for (int8_t bits = 7; bits >= 0; bits--)
         {
             if (((input[bytes] >> bits) & 1) == 0)
                 output[count] = '0';

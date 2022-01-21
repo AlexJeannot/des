@@ -1,4 +1,4 @@
-#include "../../incs/des.h"
+#include "../../incs/base.h"
 
 void    fatal_error(const char *reason)
 {
@@ -14,6 +14,7 @@ void    args_error(const char *reason, const char *input)
         printf("ft_ssl: Argument error: %s [%s]\n", reason, input);
     else
         printf("ft_ssl: Argument error: %s\n", reason);
+    display_help();
     clean_data();
     clean_args();
     exit(1);
