@@ -42,7 +42,7 @@ char    *uint_to_hex(u_int64_t number)
     return (output);
 }
 
-void    build_hash(t_message_hash *msg, void *buffers, u_int32_t nb_words, const u_int8_t swap)
+void        build_hash(t_message_hash *msg, void *buffers, u_int32_t nb_words, const u_int8_t swap)
 {
     char        *hash;
     char        *hash_block;

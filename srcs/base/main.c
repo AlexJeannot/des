@@ -1,45 +1,26 @@
 #include "../../incs/base.h"
 
-t_data *data;
-t_args *args;
-t_key *key;
+t_data  *data;
+t_args  *args;
+t_key   *key;
 
-void control_args(int argc)
-{
-    if (argc < 2)
-        args_error("No arguments provided", NULL);
-}
-
-void process_hash(void)
-{
-
-}
-
-void process_other(void)
-{
-    if (args->algorithm == ALGO_DES)
-        des();
-    else if (args->algorithm == ALGO_BASE64)
-        base64(NULL);  
-}
-
-int main(int argc, char **argv)
+void    init_global_variables(void)
 {
     data = NULL;
     args = NULL;
     key = NULL;
+}
 
+int32_t main(int argc, char **argv)
+{
+    init_global_variables();
     process_args(&argv[1], argc - 1);
-    if (args->algorithm == ALGO_MD5) // SWITCH
-        md5();
-    else if (args->algorithm == ALGO_SHA256)
-        sha256(data, NULL);  
-    else if (args->algorithm == ALGO_BASE64)
-        base64(NULL);
-    else if (args->algorithm == ALGO_DES)
-        des();  
-
-
-    
+    switch (args->algorithm)
+    {
+        case ALGO_MD5:      md5();              break;
+        case ALGO_SHA256:   sha256(data, NULL); break;
+        case ALGO_BASE64:   base64(NULL);       break;
+        case ALGO_DES:      des();              break;
+    }
     return (0);
 }

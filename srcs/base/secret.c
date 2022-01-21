@@ -1,10 +1,10 @@
 #include "../../incs/base.h"
 
-void ask_password(void)
+void    ask_password(void)
 {
-    char *first_input;
-    char *save_first_input;
-    char *second_input;
+    char    *first_input;
+    char    *save_first_input;
+    char    *second_input;
 
     if (!(first_input = getpass("Enter DES encryption password:")))
         fatal_error("user password request");
@@ -27,7 +27,7 @@ void ask_password(void)
     free(save_first_input);
 }
 
-void get_password(char *input_password)
+void    get_password(char *input_password)
 {
     if (!key)
         allocate_key();
@@ -42,11 +42,10 @@ void get_password(char *input_password)
     if (!(key->dkey.password = (char *)malloc(key->dkey.password_length)))
         fatal_error("string input memory allocation");
     strncpy(key->dkey.password, input_password, key->dkey.password_length);
-
     args->p = TRUE;
 }
 
-void create_salt(void)
+void    create_salt(void)
 {
     char        buf[8];
     int32_t     fd;
@@ -57,11 +56,11 @@ void create_salt(void)
         fatal_error("random file opening");
     if ((ret = read(fd, buf, 8)) == -1)
         fatal_error("random file reading");
-    str_to_hex(buf, key->dkey.salt, 8);
+    str_to_hex_str(buf, key->dkey.salt, 8);
     args->s = TRUE;
 }
 
-void get_salt(char *input_salt)
+void    get_salt(char *input_salt)
 {
     if (!(is_hexadecimal(input_salt)))
         args_error("Not a hexadecimal salt provided", NULL);
@@ -78,23 +77,23 @@ void get_salt(char *input_salt)
     args->s = TRUE;
 }
 
-void allocate_key(void)
+void    allocate_key(void)
 {
     if (!(key = (t_key *)malloc(sizeof(t_key))))
         fatal_error("argument structure memory allocation");
     bzero(key, sizeof(t_key));
 }
 
-void clean_key(void)
+void    clean_key(void)
 {
     if (key->dkey.password)
         free(key->dkey.password);
     free(key);
 }
 
-void get_key(char *input_key)
+void    get_key(char *input_key)
 {
-    u_int64_t input_size;
+    u_int64_t   input_size;
 
     if (!(is_hexadecimal(input_key)))
         args_error("Not a hexadecimal key provided", NULL);

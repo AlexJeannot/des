@@ -15,10 +15,9 @@ static void clean_msg(t_message_base64 *msg)
         free(msg->pc_content);
 }
 
-void base64(t_message_des *msg_des)
+void    base64(t_message_des *msg_des)
 {
     t_message_base64 msg;
-
 
     bzero(&msg, sizeof(t_message_base64));
     retrieve_data(data, &msg);

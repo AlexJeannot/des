@@ -1,8 +1,8 @@
 #include "../../incs/des.h"
 
-void get_initial_vector(char *input_iv)
+void    get_initial_vector(char *input_iv)
 {
-    u_int64_t input_size;
+    u_int64_t   input_size;
 
     if (!(is_hexadecimal(input_iv)))
         args_error("Not a hexadecimal initialization vector provided", NULL);
@@ -21,7 +21,7 @@ void get_initial_vector(char *input_iv)
     args->v = TRUE;
 }
 
-void create_initial_vector(void)
+void    create_initial_vector(void)
 {
     char        buf[8];
     int32_t     fd;
@@ -32,11 +32,11 @@ void create_initial_vector(void)
         fatal_error("random file opening");
     if ((ret = read(fd, buf, 8)) == -1)
         fatal_error("random file reading");
-    str_to_hex(buf, args->iv, 8);
+    str_to_hex_str(buf, args->iv, 8);
     args->v = TRUE;
 }
 
-void get_operation_mode(char *input)
+void    get_operation_mode(char *input)
 {
     if (input[0] && input[0] == '-')
     {
@@ -49,9 +49,9 @@ void get_operation_mode(char *input)
         args_error("Wrong operation mode provided", input);
 }
 
-void xor_plaintext(t_message_des *msg, t_block *block, u_int64_t block_index)
+void    xor_plaintext(t_message_des *msg, t_block *block, u_int64_t block_index)
 {
     if (block_index == 0)
-        get_hex_binary(args->iv, &msg->prev_block[0], 16);
+        hex_str_to_bin_str(args->iv, &msg->prev_block[0], 16);
     xor_bits_string(&block->raw[0], &msg->prev_block[0], &block->raw[0], 64);
 }

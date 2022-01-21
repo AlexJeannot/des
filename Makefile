@@ -19,34 +19,35 @@ SHA256_DIR 	= sha256/
 
 
 BASE_DOBJS		= ./comp/base/
-DES_DOBJS	= ./comp/des/
-BASE64_DOBJS		= ./comp/base64/
-MD5_DOBJS	= ./comp/md5/
-SHA256_DOBJS		= ./comp/sha256/
+DES_DOBJS		= ./comp/des/
+BASE64_DOBJS	= ./comp/base64/
+MD5_DOBJS		= ./comp/md5/
+SHA256_DOBJS	= ./comp/sha256/
 
 # SOURCES
-BASE_SRCS 		= 	annexe.c	\
-					args.c		\
-					binary.c	\
-					bits.c		\
-					control.c	\
-					data.c		\
-					display.c	\
-					error.c		\
-					file.c		\
-					hash.c		\
-					main.c		\
-					mode.c		\
-					option.c	\
-					padding.c	\
-					pbkdf2.c	\
-					secret.c	\
+BASE_SRCS 		= 	args.c			\
+					bits.c			\
+					control.c		\
+					conversion.c	\
+					data.c			\
+					display.c		\
+					error.c			\
+					file.c			\
+					hash.c			\
+					io.c			\
+					main.c			\
+					mode.c			\
+					option.c		\
+					padding.c		\
+					pbkdf2.c		\
+					secret.c		\
 					swap.c
 
 DES_SRCS 		= 	const.c		\
 					des.c		\
 					key.c		\
 					operation.c	\
+					output.c	\
 					round.c
 
 BASE64_SRCS 	=	base64.c	\
@@ -54,13 +55,13 @@ BASE64_SRCS 	=	base64.c	\
 					encode.c
 
 MD5_SRCS 	=		auxiliary_functions.c	\
-					const.c	\
-					digest.c	\
+					const.c					\
+					digest.c				\
 					md5.c
 
-SHA256_SRCS 	=		auxiliary_functions.c	\
-					const.c	\
-					digest.c	\
+SHA256_SRCS 	=	auxiliary_functions.c	\
+					const.c					\
+					digest.c				\
 					sha256.c
 
 # OBJS

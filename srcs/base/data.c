@@ -1,8 +1,8 @@
-#include "../../incs/des.h"
+#include "../../incs/base.h"
 
-void clean_data(void)
+void    clean_data(void)
 {
-    t_data *tmp_data;
+    t_data  *tmp_data;
 
     while(data)
     {
@@ -16,16 +16,16 @@ void clean_data(void)
     }
 }
 
-void create_data(t_data **new_data)
+void    create_data(t_data **new_data)
 {
     if (!(*new_data = (t_data *)malloc(sizeof(t_data))))
         fatal_error("data structure memory allocation");
     bzero(*new_data, sizeof(t_data));
 }
 
-void organize_data(t_data *new_data)
+void    organize_data(t_data *new_data)
 {
-    t_data *tmp_data;
+    t_data  *tmp_data;
 
     tmp_data = data;
     if (!data)

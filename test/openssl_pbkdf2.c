@@ -27,7 +27,7 @@ char get_hex_char(u_int8_t input)
         return '0';
 }
 
-void str_to_hex(char *str, char *hex_str, u_int64_t size)
+void str_to_hex_str(char *str, char *hex_str, u_int64_t size)
 {
     u_int64_t hex_count = 0;
 
@@ -46,7 +46,7 @@ void PBKDF2_HMAC_SHA_256(const char* pass, const unsigned char* salt, int32_t it
     PKCS5_PBKDF2_HMAC(pass, strlen(pass), salt, 8, iterations, EVP_sha256(), outputBytes, digest);
 
     bzero(hex_digest, outputBytes * 2);
-    str_to_hex((char *)digest, hex_digest, outputBytes);
+    str_to_hex_str((char *)digest, hex_digest, outputBytes);
     write(1, hex_digest, outputBytes * 2);
  }
 

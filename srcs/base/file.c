@@ -1,11 +1,11 @@
 #include "../../incs/des.h"
 
-void    bytes_join(t_data *current_data, char *buf, u_int64_t buf_length)
+void        bytes_join(t_data *current_data, char *buf, u_int64_t buf_length)
 {
     char    *new_content;
 
     if (!(new_content = (char *)malloc(current_data->rc_size + buf_length)))
-        fatal_error("File bytes memory allocation");
+        fatal_error("file bytes memory allocation");
     bzero(new_content, (current_data->rc_size + buf_length));
 
     memcpy(new_content, current_data->input, current_data->rc_size);
@@ -40,7 +40,7 @@ int32_t     get_file(t_data *new_data, char *file_path, u_int8_t type)
     return (fd);
 }
 
-void get_file_content(t_data *current_data, int32_t fd)
+void        get_file_content(t_data *current_data, int32_t fd)
 {
     ssize_t     ret;
     char        buf[65535];

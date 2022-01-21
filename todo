@@ -2,6 +2,6 @@ close fd
 protect syscall (open, read, write)
 supprimer (void)
 -help
-ask stdin
-free 
-control functions
+ask stdin OK
+free OK
+control functions 

@@ -1,28 +1,23 @@
-#include "../../incs/des.h"
+#include "../../incs/base.h"
 
-void add_padding(char *output, u_int64_t bytes, u_int64_t size)
+void    bin_str_to_str(char *binary_str, char *str, u_int64_t binary_size)
 {
-    u_int8_t count;
-    u_int8_t padding_value;
+    u_int64_t   size;
 
-    count = 0;
-    padding_value = size - bytes;
-    for (; bytes < size; bytes++)
+    size = binary_size / 8;
+    for (u_int64_t bytes = 0; bytes < size; bytes++)
     {
-        for (int8_t bits = 7; bits >= 0; bits--)
+        for (int bits = 0; bits < 8; bits++)
         {
-            if (((padding_value >> bits) & 1) == 0)
-                output[count] = '0';
-            else if (((padding_value >> bits) & 1) == 1)
-                output[count] = '1';
-            count++;
+            str[bytes] = str[bytes] << 1;
+            str[bytes] = str[bytes] | (binary_str[(bytes * 8) + bits] - 48);
         }
     }
 }
 
-void get_string_binary(char *input, char *output, u_int64_t input_size, u_int64_t output_size)
+void    str_to_bin_str(char *input, char *output, u_int64_t input_size, u_int64_t output_size)
 {
-    u_int8_t count;
+    u_int8_t    count;
 
     count = 0;
     for (u_int64_t bytes = 0; bytes < output_size; bytes++)
@@ -46,7 +41,52 @@ void get_string_binary(char *input, char *output, u_int64_t input_size, u_int64_
     }
 }
 
-void get_hex_binary(char *input, char *output, u_int64_t input_size)
+char    get_hex_char(u_int8_t input)
+{
+        switch(input)
+        {
+            case 0:     return ('0'); break;
+            case 1:     return ('1'); break;
+            case 2:     return ('2'); break;
+            case 3:     return ('3'); break;
+            case 4:     return ('4'); break;
+            case 5:     return ('5'); break;
+            case 6:     return ('6'); break;
+            case 7:     return ('7'); break;
+            case 8:     return ('8'); break;
+            case 9:     return ('9'); break;
+            case 10:    return ('A'); break;
+            case 11:    return ('B'); break;
+            case 12:    return ('C'); break;
+            case 13:    return ('D'); break;
+            case 14:    return ('E'); break;
+            case 15:    return ('F'); break;
+        }
+        return '0';
+}
+
+void    str_to_hex_str(char *str, char *hex_str, u_int64_t size)
+{
+    u_int64_t   hex_count;
+
+    hex_count = 0;
+    for (u_int64_t count = 0; count < size; count++)
+    {
+        hex_str[hex_count++] = get_hex_char((str[count] & 0b11110000) >> 4);
+        hex_str[hex_count++] = get_hex_char(str[count] & 0b00001111);
+    }
+}
+
+void    hex_str_to_str(char *hex_str, char *str, u_int64_t hex_size)
+{
+    char    tmp[hex_size * 4];
+
+    bzero(tmp, hex_size * 4);
+    hex_str_to_bin_str(hex_str, tmp, hex_size);
+    bin_str_to_str(tmp, str, hex_size * 4);
+}
+
+void    hex_str_to_bin_str(char *input, char *output, u_int64_t input_size)
 {
     for (u_int64_t count = 0; count < input_size; count++)
     {
@@ -75,20 +115,5 @@ void get_hex_binary(char *input, char *output, u_int64_t input_size)
             case 'F':   strcat(&output[0], "1111"); break;
             case 'f':   strcat(&output[0], "1111"); break;
         }
-    }
-}
-
-void get_sbox_binary(u_int8_t input, char *output)
-{
-    u_int8_t count;
-
-    count = 0;
-    for (int8_t bits = 3; bits >= 0; bits--)
-    {
-        if (((input >> bits) & 1) == 0)
-            output[count] = '0';
-        else if (((input >> bits) & 1) == 1)
-            output[count] = '1';
-        count++;
     }
 }

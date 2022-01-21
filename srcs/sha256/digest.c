@@ -52,8 +52,8 @@ static void swap_buffers(t_buffers *buffers, u_int32_t t1, u_int32_t t2)
 
 static void process_round(t_buffers *buffers, u_int32_t block, u_int32_t count)
 {
-    u_int32_t t1;
-    u_int32_t t2;
+    u_int32_t   t1;
+    u_int32_t   t2;
 
     t1 = buffers->h + bsig1(buffers->e) + ch(buffers->e, buffers->f, buffers->g) + sha256_computed_constants[count] + block;
     t2 = bsig0(buffers->a) + maj(buffers->a, buffers->b, buffers->c);

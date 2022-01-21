@@ -4,7 +4,7 @@
 ** ENCODING UTILITY FUNCTIONS
 */
 
-void add_encoded_char(t_message_base64 *msg, u_int8_t nb)
+void        add_encoded_char(t_message_base64 *msg, u_int8_t nb)
 {
     char encoded_char;
 
@@ -23,27 +23,27 @@ void add_encoded_char(t_message_base64 *msg, u_int8_t nb)
     msg->pc_content[msg->cc_size++] = encoded_char;
 }
 
-void add_complement(t_message_base64 *msg)
+void        add_complement(t_message_base64 *msg)
 {
     msg->pc_content[msg->cc_size++] = '=';
 }
 
-u_int8_t get_first_char(t_block *block)
+u_int8_t    get_first_char(t_block *block)
 {
     return ((block->a & 0b11111100) >> 2);
 }
 
-u_int8_t get_second_char(t_block *block)
+u_int8_t    get_second_char(t_block *block)
 {
     return (((block->a & 0b00000011) << 4) | ((block->b & 0b11110000) >> 4));
 }
 
-u_int8_t get_third_char(t_block *block)
+u_int8_t    get_third_char(t_block *block)
 {
     return (((block->b & 0b00001111) << 2) | ((block->c & 0b11000000) >> 6));
 }
 
-u_int8_t get_fourth_char(t_block *block)
+u_int8_t    get_fourth_char(t_block *block)
 {
     return (block->c & 0b00111111);
 }
@@ -53,7 +53,7 @@ u_int8_t get_fourth_char(t_block *block)
 ** ENCODING MAIN FUCNTIONS
 */
 
-void format_decoded_msg(t_message_base64 *msg)
+void        format_decoded_msg(t_message_base64 *msg)
 {
     msg->fc_size = (!(msg->rc_size % 3)) ? msg->rc_size : msg->rc_size + (3 - (msg->rc_size % 3));
 
@@ -68,7 +68,7 @@ void format_decoded_msg(t_message_base64 *msg)
     }
 }
 
-void prepare_encoded_output(t_message_base64 *msg)
+void        prepare_encoded_output(t_message_base64 *msg)
 {
     msg->pc_size = msg->fc_size + (msg->fc_size / 3);
     msg->blocks_size = msg->fc_size / 3;
@@ -78,7 +78,7 @@ void prepare_encoded_output(t_message_base64 *msg)
     bzero(msg->pc_content, (msg->pc_size + 1));
 }
 
-void encode_msg_base64(t_message_base64 *msg)
+void        encode_msg_base64(t_message_base64 *msg)
 {
     t_block *block;
 
@@ -107,10 +107,11 @@ void encode_msg_base64(t_message_base64 *msg)
     }
 }
 
-void write_encoded(t_message_base64 *msg, t_args *args)
+void        write_encoded(t_message_base64 *msg, t_args *args)
 {
-    u_int64_t count = 0;
+    u_int64_t   count;
 
+    count = 0;
     for (; count < msg->pc_size; count++)
     {
         write(msg->output_fd, &msg->pc_content[count], 1);
@@ -127,7 +128,7 @@ static void set_des_vars(t_message_base64 *msg, t_message_des *msg_des)
     msg_des->pc_size = msg->pc_size;
 }
 
-void process_encoding(t_message_base64 *msg, t_message_des *msg_des, t_args *args)
+void        process_encoding(t_message_base64 *msg, t_message_des *msg_des, t_args *args)
 {
     format_decoded_msg(msg);
     prepare_encoded_output(msg);

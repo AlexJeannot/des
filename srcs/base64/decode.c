@@ -4,9 +4,9 @@
 ** DECODING UTILITY FUCNTIONS
 */
 
-u_int8_t add_decoded_char(char encoded_char)
+u_int8_t    add_decoded_char(char encoded_char)
 {
-    u_int8_t bits;
+    u_int8_t    bits;
 
     bits = '\0';
     if (encoded_char >= 'A' && encoded_char <= 'Z')
@@ -25,24 +25,24 @@ u_int8_t add_decoded_char(char encoded_char)
     return (bits);
 }
 
-void set_first_char(t_block *block, u_int8_t bits)
+void        set_first_char(t_block *block, u_int8_t bits)
 {
     block->a = (bits << 2);
 }
 
-void set_second_char(t_block *block, u_int8_t bits)
+void        set_second_char(t_block *block, u_int8_t bits)
 {
     block->a = (bits & 0b00110000) >> 4 | block->a;
     block->b = (bits & 0b00001111) << 4;
 }
 
-void set_third_char(t_block *block, u_int8_t bits)
+void        set_third_char(t_block *block, u_int8_t bits)
 {
     block->b = (bits & 0b00111100) >> 2 | block->b;
     block->c = (bits & 0b00000011) << 6;
 }
 
-void set_fourth_char(t_block *block, u_int8_t bits)
+void        set_fourth_char(t_block *block, u_int8_t bits)
 {
     block->c = bits | block->c;
 }
@@ -52,34 +52,34 @@ void set_fourth_char(t_block *block, u_int8_t bits)
 ** DECODING MAIN FUCNTIONS
 */
 
-void format_encoded_msg(t_message_base64 *msg)
+void        format_encoded_msg(t_message_base64 *msg)
 {
-    u_int64_t nl_size = 0;
+    u_int64_t   nl_size;
+    u_int64_t   count_fmt;
 
+    nl_size = 0;
     for (u_int64_t count = 0; count < msg->rc_size; count++)
     {
         if (msg->raw_content[count] == '\n')
             nl_size++;
     }
-
     msg->fc_size = msg->rc_size - nl_size;
-
 
     if (!(msg->fmt_content = (char *)malloc(msg->fc_size)))
         fatal_error("formated content memory allocation"); //TODO
 
-    u_int64_t count_formated = 0;
+    count_fmt = 0;
     for (u_int64_t count = 0; count < msg->rc_size; count++)
     {
         if (msg->raw_content[count] != '\n')
         {
-            msg->fmt_content[count_formated] = msg->raw_content[count];
-            count_formated++;
+            msg->fmt_content[count_fmt] = msg->raw_content[count];
+            count_fmt++;
         }
     }
 }
 
-void prepare_decoded_output(t_message_base64 *msg)
+void        prepare_decoded_output(t_message_base64 *msg)
 {
     msg->pc_size = msg->fc_size - (msg->fc_size / 4);
     msg->blocks_size = msg->pc_size / 3;
@@ -89,7 +89,7 @@ void prepare_decoded_output(t_message_base64 *msg)
     bzero(msg->pc_content, (msg->pc_size + 1));
 }
 
-void decode_msg_base64(t_message_base64 *msg)
+void        decode_msg_base64(t_message_base64 *msg)
 {
     t_block *block;
 
@@ -112,7 +112,7 @@ void decode_msg_base64(t_message_base64 *msg)
     }
 }
 
-void write_decoded(t_message_base64 *msg)
+void        write_decoded(t_message_base64 *msg)
 {
     for (u_int64_t count = 0; count < msg->pc_size; count++)
         write(msg->output_fd, &msg->pc_content[count], 1);
@@ -124,7 +124,7 @@ static void set_des_vars(t_message_base64 *msg, t_message_des *msg_des)
     msg_des->rc_size = msg->pc_size;
 }
 
-void process_decoding(t_message_base64 *msg, t_message_des *msg_des, t_args *args)
+void        process_decoding(t_message_base64 *msg, t_message_des *msg_des, t_args *args)
 {
     format_encoded_msg(msg);
     prepare_decoded_output(msg);

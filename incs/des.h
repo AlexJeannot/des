@@ -8,8 +8,8 @@
 
 typedef struct  s_keys
 {
-    char origin_key[16];
-    char round_keys[16][48];
+    char    origin_key[16];
+    char    round_keys[16][48];
 }               t_keys;
 
 typedef struct  s_block
@@ -26,36 +26,43 @@ typedef struct  s_block
 }               t_block;
 
 /*
-**  CONST.c
+**  CONST.C
 */
-extern const u_int8_t expansion_permutation[48];
-extern const u_int8_t s_boxes[8][64];
-extern const u_int8_t p_box[32];
-extern const u_int8_t initial_permutation[64];
-extern const u_int8_t final_permutation[64];
-extern const u_int8_t key_compression[48];
-extern const u_int8_t key_permutation[56];
+extern const u_int8_t   expansion_permutation[48];
+extern const u_int8_t   s_boxes[8][64];
+extern const u_int8_t   p_box[32];
+extern const u_int8_t   initial_permutation[64];
+extern const u_int8_t   final_permutation[64];
+extern const u_int8_t   key_compression[48];
+extern const u_int8_t   key_permutation[56];
 
 /*
-**  KEY.c
+**  KEY.C
 */
-void create_all_round_keys(t_keys *keys, u_int8_t type);
+void    create_all_round_keys(t_keys *keys, u_int8_t type);
 
 /*
-**  OPERATION.c
+**  OPERATION.C
 */
-void permute(char *input, char *output, const u_int8_t *array, int size);
-void xor_bits_string(char *first, char *second, char *output, u_int64_t size);
+void    permute(char *input, char *output, const u_int8_t *array, u_int8_t size);
+void    xor_bits_string(char *first, char *second, char *output, u_int64_t size);
 
 /*
-**  ROUND.c
+**  OUTPUT.C
 */
-void prepare_rounds(t_message_des *msg, t_block *block, u_int64_t block_index);
-void execute_round(t_block *block, t_keys *keys, u_int8_t round);
+void    prepare_output(t_message_des *msg);
+void    increment_output(t_args *args, t_message_des *msg, t_block *block, char *output, u_int8_t is_last_block);
+void    write_output(t_data *data, t_args *args, t_message_des *msg);
 
+/*
+**  ROUND.C
+*/
+void    prepare_rounds(t_message_des *msg, t_block *block, u_int64_t block_index);
+void    execute_round(t_block *block, t_keys *keys, u_int8_t round);
 
-
-void xor_plaintext(t_message_des *msg, t_block *block, u_int64_t block_index);
-void print_binary_str(char *str, char *type, int size);
+/*
+**  IN OTHERS DIRECTORIES
+*/
+void    xor_plaintext(t_message_des *msg, t_block *block, u_int64_t block_index);
 
 #endif

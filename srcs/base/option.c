@@ -1,6 +1,6 @@
-#include "../../incs/des.h"
+#include "../../incs/base.h"
 
-void control_option(char *option)
+void        control_option(char *option)
 {
     if (args->algorithm == ALGO_MD5)
     {
@@ -77,7 +77,7 @@ u_int8_t    process_i(char *input, int32_t diff)
         args_error("no file provided as input", NULL);
     if (!is_hash_algorithm() && args->i == TRUE)
         args_error("input file already provided", input);
-    process_io(input, INPUT);
+    process_file(input, INPUT);
     return (1);
 }
 
@@ -108,7 +108,7 @@ u_int8_t    process_o(char *input, int32_t diff)
         args_error("no file provided as output", NULL);
     if (!is_hash_algorithm() && args->o == TRUE)
         args_error("output file already provided", input);
-    process_io(input, OUTPUT);
+    process_file(input, OUTPUT);
     return (1);
 }
 
@@ -191,20 +191,19 @@ u_int8_t    parse_options(char *input, char *next_input, int32_t args_diff)
 
     switch(input[1])
     {
-        case ('a'): return(process_a()); break;
-        case ('d'): return(process_d()); break;
-        case ('e'): return(process_e()); break;
-        case ('i'): return(process_i(next_input, args_diff)); break;
-        case ('k'): return(process_k(next_input, args_diff)); break;
-        case ('n'): return(process_n()); break;
-        case ('o'): return(process_o(next_input, args_diff)); break;
-        case ('p'): return(process_p(next_input, args_diff)); break;
-        case ('q'): return(process_q()); break;
-        case ('r'): return(process_r()); break;
-        case ('s'): return(process_s(next_input, args_diff)); break;
-        case ('v'): return(process_v(next_input, args_diff)); break;
+        case ('a'): return(process_a());                        break;
+        case ('d'): return(process_d());                        break;
+        case ('e'): return(process_e());                        break;
+        case ('i'): return(process_i(next_input, args_diff));   break;
+        case ('k'): return(process_k(next_input, args_diff));   break;
+        case ('n'): return(process_n());                        break;
+        case ('o'): return(process_o(next_input, args_diff));   break;
+        case ('p'): return(process_p(next_input, args_diff));   break;
+        case ('q'): return(process_q());                        break;
+        case ('r'): return(process_r());                        break;
+        case ('s'): return(process_s(next_input, args_diff));   break;
+        case ('v'): return(process_v(next_input, args_diff));   break;
         default:    args_error("Wrong option provided", input);
     }
-
     return (0);
 }

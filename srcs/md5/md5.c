@@ -16,10 +16,10 @@ static void clean_msg(t_message_hash *msg)
     free(msg->hash);
 }
 
-void    md5(void)
+void        md5(void)
 {
-    t_data *tmp_data;
-    t_message_hash msg;
+    t_data          *tmp_data;
+    t_message_hash  msg;
 
     tmp_data = data;
     while (tmp_data)

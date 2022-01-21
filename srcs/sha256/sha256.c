@@ -18,9 +18,9 @@ static void clean_msg(t_message_hash *msg)
         free(msg->hash);
 }
 
-void    sha256(t_data *current_data, char *output)
+void        sha256(t_data *current_data, char *output)
 {
-    t_message_hash msg;
+    t_message_hash  msg;
 
     while (current_data)
     {

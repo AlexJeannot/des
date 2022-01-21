@@ -15,11 +15,6 @@ typedef struct  s_buffers
     u_int32_t   h;
 }               t_buffers;
 
-/*
-** VARIABLES
-*/
-extern const u_int32_t sha256_computed_constants[64];
-
 
 /*
 ** AUXILIARY_FUNCTIONS.C
@@ -30,6 +25,11 @@ u_int32_t   ssig0(u_int32_t x);
 u_int32_t   ssig1(u_int32_t x);
 u_int32_t   bsig0(u_int32_t x);
 u_int32_t   bsig1(u_int32_t x);
+
+/*
+**  CONST.C
+*/
+extern const u_int32_t sha256_computed_constants[64];
 
 /*
 ** DIGEST.C

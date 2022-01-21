@@ -1,14 +1,13 @@
 #include "../../incs/des.h"
 
-void prepare_rounds(t_message_des *msg, t_block *block, u_int64_t block_index)
+void    prepare_rounds(t_message_des *msg, t_block *block, u_int64_t block_index)
 {
     bzero(block, sizeof(t_block));
 
     if (is_last_block(msg->block_number, block_index) && msg->is_last_block_empty)
-        get_string_binary("", &block->raw[0], msg->rc_size, 8);
+        str_to_bin_str("", &block->raw[0], msg->rc_size, 8);
     else
-        get_string_binary(&msg->raw_content[block_index * 8], &block->raw[0], msg->rc_size, 8);
-
+        str_to_bin_str(&msg->raw_content[block_index * 8], &block->raw[0], msg->rc_size, 8);
     msg->rc_size -= 8;
 
     if (args->mode == MODE_CBC)
@@ -20,10 +19,25 @@ void prepare_rounds(t_message_des *msg, t_block *block, u_int64_t block_index)
 
 }
 
-void s_box(char *xored, char *s_boxed)
+void    get_sbox_binary(u_int8_t input, char *output)
 {
-    u_int8_t x;
-    u_int8_t y;
+    u_int8_t    count;
+
+    count = 0;
+    for (int8_t bits = 3; bits >= 0; bits--)
+    {
+        if (((input >> bits) & 1) == 0)
+            output[count] = '0';
+        else if (((input >> bits) & 1) == 1)
+            output[count] = '1';
+        count++;
+    }
+}
+
+void    s_box(char *xored, char *s_boxed)
+{
+    u_int8_t    x;
+    u_int8_t    y;
 
     for (u_int8_t count = 0; count < 8; count++)
     {
@@ -48,9 +62,9 @@ void s_box(char *xored, char *s_boxed)
     }
 }
 
-void swap_blocks(char *left, char *right, char *p_boxed, u_int8_t round)
+void    swap_blocks(char *left, char *right, char *p_boxed, u_int8_t round)
 {
-    char xor_result[32];
+    char    xor_result[32];
 
     bzero(xor_result, 32);
 
@@ -64,7 +78,7 @@ void swap_blocks(char *left, char *right, char *p_boxed, u_int8_t round)
         strncpy(left, xor_result, 32);
 }
 
-void execute_round(t_block *block, t_keys *keys, u_int8_t round)
+void    execute_round(t_block *block, t_keys *keys, u_int8_t round)
 {
     permute(block->right, block->expanded, &expansion_permutation[0], 48);
     xor_bits_string(block->expanded, keys->round_keys[round], block->xored, 48);
