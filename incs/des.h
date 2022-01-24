@@ -51,7 +51,7 @@ void    xor_bits_string(char *first, char *second, char *output, u_int64_t size)
 **  OUTPUT.C
 */
 void    prepare_output(t_message_des *msg);
-void    increment_output(t_args *args, t_message_des *msg, t_block *block, char *output, u_int8_t is_last_block);
+void    increment_output(t_args *args, t_message_des *msg, t_block *block, char *output, u_int64_t block_index);
 void    write_output(t_data *data, t_args *args, t_message_des *msg);
 
 /*

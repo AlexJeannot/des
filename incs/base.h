@@ -117,6 +117,7 @@ typedef struct  s_message_base64
     u_int64_t           fc_size;
     u_int64_t           pc_size;
     u_int64_t           cc_size;
+    u_int8_t            pad_size;
 
     u_int64_t           blocks_size;
 }               t_message_base64;

@@ -33,7 +33,7 @@ void        sha256(t_data *current_data, char *output)
         if (args->algorithm == ALGO_SHA256)
             display_hash(&msg);
         else
-            ft_strncpy(output, msg.hash, 64);
+            ft_memcpy(output, msg.hash, 64);
         clean_msg(&msg);
         current_data = current_data->next;
     }

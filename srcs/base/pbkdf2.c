@@ -11,7 +11,7 @@ void        prepare_hmac_sha256(void)
     ft_memset(ipad, 0x36, 64);
 
     if (key->dkey.password_length <= 64)
-        ft_strncpy(key->dkey.fmt_password, key->dkey.password, 64);
+        ft_memcpy(key->dkey.fmt_password, key->dkey.password, 64);
     else
     {
         key_data.input = key->dkey.password;

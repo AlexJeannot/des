@@ -36,7 +36,6 @@ int32_t     get_file(t_data *new_data, char *file_path, u_int8_t type)
         if ((fd = open(file_path, O_WRONLY | O_CREAT, 0644)) == -1)
             fatal_error("output file opening/creation");
     }
-    
     return (fd);
 }
 

@@ -12,13 +12,16 @@ void        allocate_args(void)
     if (!(args = (t_args *)malloc(sizeof(t_args))))
         fatal_error("argument structure memory allocation");
     ft_bzero(args, sizeof(t_args));
+
+    args->output_fd = STDOUT_FILENO;
 }
 
 void        clean_args(void)
 {
     if (args)
         free(args);
-    close(args->output_fd);
+    if (args->output_fd > 1)
+        close(args->output_fd);
 }
 
 void        get_algorithm(char *input)
@@ -71,7 +74,7 @@ void        format_args(void)
     if (!(args->process_type))
         args->process_type = EN;
 
-    if (!is_hash_algorithm() && args->k == FALSE)
+    if (args->algorithm == ALGO_DES && args->k == FALSE)
     {
         if (args->p == FALSE)
             ask_password();
@@ -80,7 +83,7 @@ void        format_args(void)
         pbkdf2(8, 32, 310000);
     }
 
-    if (args->mode == MODE_CBC && args->v == FALSE)
+    if (args->algorithm == ALGO_DES && args->mode == MODE_CBC && args->v == FALSE)
         create_initial_vector();
 
     if (is_stdin_process())

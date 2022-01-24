@@ -9,8 +9,7 @@ static void retrieve_data(t_message_des *msg, t_keys *keys)
         msg->raw_content = data->input;
         msg->rc_size = data->rc_size;
     }
-    ft_strncpy(keys->origin_key, args->key, 16);
-    args->output_fd = args->output_fd;
+    ft_memcpy(keys->origin_key, args->key, 16);
 
     if (args->process_type == ENCRYPTION)
     {
@@ -19,7 +18,10 @@ static void retrieve_data(t_message_des *msg, t_keys *keys)
         msg->fc_size = msg->rc_size + (8 - msg->rc_size);
     }
     else
+    {
         msg->block_number = (msg->rc_size % 8 == 0) ? (msg->rc_size / 8) : (msg->rc_size / 8)+ 1;
+        msg->fc_size = msg->rc_size;
+    }
 }
 
 static void clean_msg(t_message_des *msg)
@@ -46,7 +48,7 @@ void        des(void)
         prepare_rounds(&msg, &block, block_index);
         for (u_int8_t round = 0; round < 16; round++)
             execute_round(&block, &keys, round);
-        increment_output(args, &msg, &block, &msg.pc_content[block_index * 8], TRUE); //todo
+        increment_output(args, &msg, &block, &msg.pc_content[block_index * 8], block_index);
     }
     write_output(data, args, &msg);
     clean_msg(&msg);

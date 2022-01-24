@@ -21,18 +21,18 @@ void        set_round_keys(t_keys *keys, char *input_key, u_int8_t type)
     {
         shift = shift_number(round + 1);
 
-        ft_strncpy(&shifted_key[0], &input_key[shift], 28 - shift);
-        ft_strncpy(&shifted_key[28 - shift], &input_key[0], shift);
-        ft_strncpy(&shifted_key[28], &input_key[28 + shift], 28 - shift);
-        ft_strncpy(&shifted_key[56 - shift], &input_key[28], shift);
+        ft_memcpy(&shifted_key[0], &input_key[shift], 28 - shift);
+        ft_memcpy(&shifted_key[28 - shift], &input_key[0], shift);
+        ft_memcpy(&shifted_key[28], &input_key[28 + shift], 28 - shift);
+        ft_memcpy(&shifted_key[56 - shift], &input_key[28], shift);
 
         permute(&shifted_key[0], &round_key[0], &key_compression[0], 48);
         if (type == ENCRYPTION)
-            ft_strncpy(&keys->round_keys[round][0], &round_key[0], 48);
+            ft_memcpy(&keys->round_keys[round][0], &round_key[0], 48);
         else
-            ft_strncpy(&keys->round_keys[15 - round][0], &round_key[0], 48);
+            ft_memcpy(&keys->round_keys[15 - round][0], &round_key[0], 48);
 
-        ft_strncpy(&input_key[0], &shifted_key[0], 56);
+        ft_memcpy(&input_key[0], &shifted_key[0], 56);
     }
 }
 

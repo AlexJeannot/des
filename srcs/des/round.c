@@ -14,9 +14,8 @@ void    prepare_rounds(t_message_des *msg, t_block *block, u_int64_t block_index
         xor_plaintext(msg, block, block_index);
 
     permute(&block->raw[0], &block->permuted[0], &initial_permutation[0], 64);
-    ft_strncpy(&block->left[0], &block->permuted[0], 32);
-    ft_strncpy(&block->right[0], &block->permuted[32], 32);
-
+    ft_memcpy(&block->left[0], &block->permuted[0], 32);
+    ft_memcpy(&block->right[0], &block->permuted[32], 32);
 }
 
 void    get_sbox_binary(u_int8_t input, char *output)
@@ -71,11 +70,11 @@ void    swap_blocks(char *left, char *right, char *p_boxed, u_int8_t round)
     xor_bits_string(p_boxed, left, &xor_result[0], 32);
     if (round < 15)
     {
-        ft_strncpy(left, right, 32);
-        ft_strncpy(right, xor_result, 32); 
+        ft_memcpy(left, right, 32);
+        ft_memcpy(right, xor_result, 32); 
     }
     else
-        ft_strncpy(left, xor_result, 32);
+        ft_memcpy(left, xor_result, 32);
 }
 
 void    execute_round(t_block *block, t_keys *keys, u_int8_t round)

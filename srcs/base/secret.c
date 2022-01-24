@@ -12,7 +12,7 @@ void    ask_password(void)
     if (!(save_first_input = (char *)malloc(ft_strlen(first_input) + 1)))
         fatal_error("string input memory allocation");
     ft_bzero(save_first_input, ft_strlen(first_input) + 1);
-    ft_strncpy(save_first_input, first_input, ft_strlen(first_input));
+    ft_memcpy(save_first_input, first_input, ft_strlen(first_input));
 
     if (!(second_input = getpass("Verification - enter DES encryption password:")))
         fatal_error("user password request");
@@ -41,7 +41,7 @@ void    get_password(char *input_password)
 
     if (!(key->dkey.password = (char *)malloc(key->dkey.password_length)))
         fatal_error("string input memory allocation");
-    ft_strncpy(key->dkey.password, input_password, key->dkey.password_length);
+    ft_memcpy(key->dkey.password, input_password, key->dkey.password_length);
     args->p = TRUE;
 }
 
@@ -73,7 +73,7 @@ void    get_salt(char *input_salt)
     else if (ft_strlen(input_salt) < 16)
         ft_putstr_fd("Salt is too short, padding with zero bytes to length\n", 1);
 
-    ft_strncpy(key->dkey.salt, input_salt, 16);
+    ft_memcpy(key->dkey.salt, input_salt, 16);
     args->s = TRUE;
 }
 
@@ -111,6 +111,6 @@ void    get_key(char *input_key)
         ft_putstr_fd("Hexadecimal key is too short, padding with zero bytes to length\n", 1);
 
     ft_memset(args->key, 48, 16);
-    ft_strncpy(args->key, input_key, input_size);
+    ft_memcpy(args->key, input_key, input_size);
     args->k = TRUE;
 }

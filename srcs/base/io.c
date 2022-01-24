@@ -10,7 +10,7 @@ void    process_string(char *input)
         fatal_error("string input memory allocation");
     ft_bzero(new_data->input, new_data->rc_size);
 
-    ft_strncpy(new_data->input, input, new_data->rc_size);
+    ft_memcpy(new_data->input, input, new_data->rc_size);
     new_data->src_type = SRC_ARG;
 
     organize_data(new_data);
@@ -21,11 +21,8 @@ void    process_stdin(void)
     t_data  *new_data;
 
     create_data(&new_data);
-    write(1, "Enter your input: ", 18);
     get_file_content(new_data, STDIN_FILENO);
-    write(1, "\n", 1);
     new_data->src_type = SRC_STDIN;
-
     new_data->next = data;
     data = new_data;
 }

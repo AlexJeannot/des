@@ -17,7 +17,7 @@ void    get_initial_vector(char *input_iv)
         ft_putstr_fd("Initialization vector is too short, padding with zero bytes to length\n", 1);
     
     ft_memset(args->iv, 48, 16);
-    ft_strncpy(args->iv, input_iv, input_size);
+    ft_memcpy(args->iv, input_iv, input_size);
     args->v = TRUE;
 }
 
