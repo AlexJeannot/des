@@ -2,7 +2,7 @@
 
 static void retrieve_data(t_data *current_data, t_message_hash *msg)
 {
-    bzero(msg, sizeof(t_message_hash));
+    ft_bzero(msg, sizeof(t_message_hash));
     msg->raw_content = current_data->input;
     msg->rc_size = current_data->rc_size;
     msg->nofile = current_data->nofile;
@@ -33,7 +33,7 @@ void        sha256(t_data *current_data, char *output)
         if (args->algorithm == ALGO_SHA256)
             display_hash(&msg);
         else
-            strncpy(output, msg.hash, 64);
+            ft_strncpy(output, msg.hash, 64);
         clean_msg(&msg);
         current_data = current_data->next;
     }

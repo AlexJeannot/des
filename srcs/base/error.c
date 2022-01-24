@@ -1,19 +1,31 @@
 #include "../../incs/base.h"
 
-void    fatal_error(const char *reason)
+void    fatal_error(char *reason)
 {
-    printf("ft_ssl: Fatal error: %s\n", reason);
+    ft_putstr_fd("ft_ssl: Fatal error: ", 2);
+    ft_putstr_fd(reason, 2);
+    ft_putstr_fd("\n", 2);
     clean_data();
     clean_args();
     exit(1);
 }
 
-void    args_error(const char *reason, const char *input)
+void    args_error(char *reason, char *input)
 {
     if (input)
-        printf("ft_ssl: Argument error: %s [%s]\n", reason, input);
+    {
+        ft_putstr_fd("ft_ssl: Argument error: ", 2);
+        ft_putstr_fd(reason, 2);
+        ft_putstr_fd(" [", 2);
+        ft_putstr_fd(input, 2);
+        ft_putstr_fd("]\n", 2);
+    }
     else
-        printf("ft_ssl: Argument error: %s\n", reason);
+    {
+        ft_putstr_fd("ft_ssl: Argument error: ", 2);
+        ft_putstr_fd(reason, 2);
+        ft_putstr_fd("\n", 2);
+    }
     display_help();
     clean_data();
     clean_args();

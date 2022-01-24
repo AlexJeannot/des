@@ -151,6 +151,19 @@ void        clean_args(void);
 void        process_args(char **list_args, int32_t nb_args);
 
 /*
+**  ANNEXES.C
+*/
+size_t  ft_strlen(const char *s);
+void	ft_strncat(char *dest, const char *src, size_t n);
+int     ft_strncmp(const char *s1, const char *s2, size_t n);
+void	ft_strncpy(char *dest, const char *src, size_t n);
+void	*ft_memcpy(void *dest, const void *src, size_t n);
+void	*ft_memset(void *s, int c, size_t n);
+void    ft_bzero(void *s, size_t n);
+void	ft_putstr_fd(char *s, int fd);
+
+
+/*
 **  BITS.C
 */
 u_int32_t   rotate_left(u_int32_t x, u_int32_t offset);
@@ -192,8 +205,8 @@ void        display_hash(const t_message_hash *msg);
 /*
 **  ERROR.C
 */
-void        fatal_error(const char *reason);
-void        args_error(const char *reason, const char *input);
+void        fatal_error(char *reason);
+void        args_error(char *reason, char *input);
 
 
 /*

@@ -20,7 +20,7 @@ void    create_data(t_data **new_data)
 {
     if (!(*new_data = (t_data *)malloc(sizeof(t_data))))
         fatal_error("data structure memory allocation");
-    bzero(*new_data, sizeof(t_data));
+    ft_bzero(*new_data, sizeof(t_data));
 }
 
 void    organize_data(t_data *new_data)

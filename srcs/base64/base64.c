@@ -19,7 +19,7 @@ void    base64(t_message_des *msg_des)
 {
     t_message_base64 msg;
 
-    bzero(&msg, sizeof(t_message_base64));
+    ft_bzero(&msg, sizeof(t_message_base64));
     retrieve_data(data, &msg);
     if (args->process_type == ENCODING)
         process_encoding(&msg, msg_des, args);

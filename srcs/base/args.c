@@ -11,7 +11,7 @@ void        allocate_args(void)
 {
     if (!(args = (t_args *)malloc(sizeof(t_args))))
         fatal_error("argument structure memory allocation");
-    bzero(args, sizeof(t_args));
+    ft_bzero(args, sizeof(t_args));
 }
 
 void        clean_args(void)
@@ -26,16 +26,16 @@ void        get_algorithm(char *input)
     if (!input)
         args_error("no algorithm provided", NULL);
 
-    if (strncmp(input, "des", 3) == 0)
+    if (ft_strncmp(input, "des", 3) == 0)
     {
         args->algorithm = ALGO_DES;
         get_operation_mode(&input[3]);
     }
-    else if (strncmp(input, "base64", 6) == 0)
+    else if (ft_strncmp(input, "base64", 6) == 0)
         args->algorithm = ALGO_BASE64;
-    else if (strncmp(input, "md5", 3) == 0)
+    else if (ft_strncmp(input, "md5", 3) == 0)
         args->algorithm = ALGO_MD5;
-    else if (strncmp(input, "sha256", 6) == 0)
+    else if (ft_strncmp(input, "sha256", 6) == 0)
         args->algorithm = ALGO_SHA256;
     else
         args_error("wrong algorithm provided", input);

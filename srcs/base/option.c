@@ -186,7 +186,7 @@ u_int8_t    parse_options(char *input, char *next_input, int32_t args_diff)
 {
     if (!input)
         args_error("no option provided", NULL);
-    else if (strlen(input) != 2)
+    else if (ft_strlen(input) != 2)
         args_error("wrong option provided", input);
 
     switch(input[1])

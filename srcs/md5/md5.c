@@ -2,7 +2,7 @@
 
 static void retrieve_data(t_data *current_data, t_message_hash *msg)
 {
-    bzero(msg, sizeof(t_message_hash));
+    ft_bzero(msg, sizeof(t_message_hash));
     msg->raw_content = current_data->input;
     msg->rc_size = current_data->rc_size;
     msg->nofile = current_data->nofile;

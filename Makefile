@@ -26,6 +26,7 @@ SHA256_DOBJS	= ./comp/sha256/
 
 # SOURCES
 BASE_SRCS 		= 	args.c			\
+					annexes.c		\
 					bits.c			\
 					control.c		\
 					conversion.c	\

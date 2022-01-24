@@ -2,7 +2,7 @@
 
 void    prepare_rounds(t_message_des *msg, t_block *block, u_int64_t block_index)
 {
-    bzero(block, sizeof(t_block));
+    ft_bzero(block, sizeof(t_block));
 
     if (is_last_block(msg->block_number, block_index) && msg->is_last_block_empty)
         str_to_bin_str("", &block->raw[0], msg->rc_size, 8);
@@ -14,8 +14,8 @@ void    prepare_rounds(t_message_des *msg, t_block *block, u_int64_t block_index
         xor_plaintext(msg, block, block_index);
 
     permute(&block->raw[0], &block->permuted[0], &initial_permutation[0], 64);
-    strncpy(&block->left[0], &block->permuted[0], 32);
-    strncpy(&block->right[0], &block->permuted[32], 32);
+    ft_strncpy(&block->left[0], &block->permuted[0], 32);
+    ft_strncpy(&block->right[0], &block->permuted[32], 32);
 
 }
 
@@ -66,16 +66,16 @@ void    swap_blocks(char *left, char *right, char *p_boxed, u_int8_t round)
 {
     char    xor_result[32];
 
-    bzero(xor_result, 32);
+    ft_bzero(xor_result, 32);
 
     xor_bits_string(p_boxed, left, &xor_result[0], 32);
     if (round < 15)
     {
-        strncpy(left, right, 32);
-        strncpy(right, xor_result, 32); 
+        ft_strncpy(left, right, 32);
+        ft_strncpy(right, xor_result, 32); 
     }
     else
-        strncpy(left, xor_result, 32);
+        ft_strncpy(left, xor_result, 32);
 }
 
 void    execute_round(t_block *block, t_keys *keys, u_int8_t round)

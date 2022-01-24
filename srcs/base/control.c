@@ -34,7 +34,7 @@ u_int8_t    is_hexadecimal(char *input)
 {
     u_int64_t   size;
 
-    size = (input) ? strlen(input) : 0;
+    size = (input) ? ft_strlen(input) : 0;
     for (u_int64_t count = 0; count < size; count++)
     {
         if (input[count] < 48

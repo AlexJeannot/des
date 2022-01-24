@@ -4,7 +4,7 @@ round_function r_func[4] = {&f, &g, &h, &i};
 
 static void init_buffers(t_buffers *buffers)
 {
-    bzero(buffers, sizeof(t_buffers));
+    ft_bzero(buffers, sizeof(t_buffers));
 
     buffers->a = 0x67452301;
     buffers->b = 0xefcdab89;

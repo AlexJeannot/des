@@ -63,8 +63,8 @@ void        format_decoded_msg(t_message_base64 *msg)
         if (!(msg->fmt_content = (char *)malloc(msg->fc_size)))
             fatal_error("formated content memory allocation"); //TODO
         
-        bzero(msg->fmt_content, msg->fc_size);
-        memcpy(msg->fmt_content, msg->raw_content, msg->rc_size);
+        ft_bzero(msg->fmt_content, msg->fc_size);
+        ft_memcpy(msg->fmt_content, msg->raw_content, msg->rc_size);
     }
 }
 
@@ -75,7 +75,7 @@ void        prepare_encoded_output(t_message_base64 *msg)
 
     if (!(msg->pc_content = (char *)malloc(msg->pc_size + 1)))
         fatal_error("processed content memory allocation"); //TODO
-    bzero(msg->pc_content, (msg->pc_size + 1));
+    ft_bzero(msg->pc_content, (msg->pc_size + 1));
 }
 
 void        encode_msg_base64(t_message_base64 *msg)

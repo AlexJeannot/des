@@ -6,17 +6,17 @@ void        prepare_hmac_sha256(void)
     char    opad[64];
     char    ipad[64];
 
-    bzero(&key_data, sizeof(t_data));
-    memset(opad, 0x5c, 64);
-    memset(ipad, 0x36, 64);
+    ft_bzero(&key_data, sizeof(t_data));
+    ft_memset(opad, 0x5c, 64);
+    ft_memset(ipad, 0x36, 64);
 
     if (key->dkey.password_length <= 64)
-        strncpy(key->dkey.fmt_password, key->dkey.password, 64);
+        ft_strncpy(key->dkey.fmt_password, key->dkey.password, 64);
     else
     {
         key_data.input = key->dkey.password;
         key_data.rc_size = key->dkey.password_length;
-        bzero(key->dkey.hash_result, 64);
+        ft_bzero(key->dkey.hash_result, 64);
         sha256(&key_data, key->dkey.hash_result);
         hex_str_to_str(key->dkey.hash_result, key->dkey.fmt_password, 64);
     }
@@ -33,16 +33,16 @@ void        exec_sha256(char *message, char *output, u_int64_t message_size, u_i
     t_data  exec_data;
     char    input[64 + message_size];
 
-    bzero(&exec_data, sizeof(t_data));
-    bzero(input, 64 + message_size);
-    bzero(output, 32);
+    ft_bzero(&exec_data, sizeof(t_data));
+    ft_bzero(input, 64 + message_size);
+    ft_bzero(output, 32);
 
-    (type == HMAC_FIRST) ? memcpy(&input[0], &key->dkey.i_key_pad, 64) : memcpy(&input[0], &key->dkey.o_key_pad, 64);
-    memcpy(&input[64], message, message_size);
+    (type == HMAC_FIRST) ? ft_memcpy(&input[0], &key->dkey.i_key_pad, 64) : ft_memcpy(&input[0], &key->dkey.o_key_pad, 64);
+    ft_memcpy(&input[64], message, message_size);
 
     exec_data.input = input;
     exec_data.rc_size = 64 + message_size;
-    bzero(key->dkey.hash_result, 64);
+    ft_bzero(key->dkey.hash_result, 64);
     sha256(&exec_data, key->dkey.hash_result);
     hex_str_to_str(key->dkey.hash_result, output, 64);
 }
@@ -57,7 +57,7 @@ void        hmac_sha256(char *tmp_key, char *message, u_int8_t message_size)
 
 void        set_first_message(char *first_message)
 {
-    bzero(first_message, 12);
+    ft_bzero(first_message, 12);
     hex_str_to_str(key->dkey.salt, first_message, 16);
     first_message[11] = 0b00000001;
 }
@@ -67,7 +67,7 @@ static void f(char *partial_derived_key, u_int32_t hash_length, u_int64_t round)
     char tmp_key[32];
     char first_message[12];
 
-    bzero(tmp_key, 32);
+    ft_bzero(tmp_key, 32);
     set_first_message(first_message);
 
     for (u_int64_t count = 0; count < round; count++)
@@ -87,16 +87,16 @@ void        pbkdf2(u_int32_t dkey_length, u_int32_t hash_length, u_int64_t round
     char        complete_derived_key[hash_length * hash_length_block];
     u_int64_t   dkey_count;
 
-    bzero(partial_derived_key, hash_length);
-    bzero(complete_derived_key, hash_length * hash_length_block);
+    ft_bzero(partial_derived_key, hash_length);
+    ft_bzero(complete_derived_key, hash_length * hash_length_block);
     dkey_count = 0;
 
-    printf("Creating key, please wait ...\n");
+    ft_putstr_fd("Creating key, please wait ...\n", 1);
     prepare_hmac_sha256();
     for (u_int64_t count  = 0; count < hash_length_block; count++)
     {
         f(partial_derived_key, hash_length, round);
-        memcpy(&complete_derived_key[dkey_count], partial_derived_key, 32);
+        ft_memcpy(&complete_derived_key[dkey_count], partial_derived_key, 32);
         dkey_count += hash_length;
     }
     str_to_hex_str(complete_derived_key, key->key, 32);

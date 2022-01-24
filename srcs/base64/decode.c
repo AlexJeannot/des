@@ -86,7 +86,7 @@ void        prepare_decoded_output(t_message_base64 *msg)
 
     if (!(msg->pc_content = (char *)malloc(msg->pc_size + 1)))
         fatal_error("processed content memory allocation");
-    bzero(msg->pc_content, (msg->pc_size + 1));
+    ft_bzero(msg->pc_content, (msg->pc_size + 1));
 }
 
 void        decode_msg_base64(t_message_base64 *msg)

@@ -9,7 +9,7 @@ static void retrieve_data(t_message_des *msg, t_keys *keys)
         msg->raw_content = data->input;
         msg->rc_size = data->rc_size;
     }
-    strncpy(keys->origin_key, args->key, 16);
+    ft_strncpy(keys->origin_key, args->key, 16);
     args->output_fd = args->output_fd;
 
     if (args->process_type == ENCRYPTION)
@@ -34,8 +34,8 @@ void        des(void)
     t_message_des   msg;
     t_block         block;
 
-    bzero(&msg, sizeof(t_message_des));
-    bzero(&keys, sizeof(t_keys));
+    ft_bzero(&msg, sizeof(t_message_des));
+    ft_bzero(&keys, sizeof(t_keys));
 
     retrieve_data(&msg, &keys);
     prepare_output(&msg);

@@ -7,17 +7,17 @@ void    get_initial_vector(char *input_iv)
     if (!(is_hexadecimal(input_iv)))
         args_error("not a hexadecimal initialization vector provided", NULL);
 
-    input_size = strlen(input_iv);
+    input_size = ft_strlen(input_iv);
     if (input_size > 16)
     {
-        printf("Initialization vector is too long, ignoring excess\n");
+        ft_putstr_fd("Initialization vector is too long, ignoring excess\n", 1);
         input_size = 16;
     }
     else if (input_size < 16)
-        printf("Initialization vector is too short, padding with zero bytes to length\n");
+        ft_putstr_fd("Initialization vector is too short, padding with zero bytes to length\n", 1);
     
-    memset(args->iv, 48, 16);
-    strncpy(args->iv, input_iv, input_size);
+    ft_memset(args->iv, 48, 16);
+    ft_strncpy(args->iv, input_iv, input_size);
     args->v = TRUE;
 }
 
@@ -27,7 +27,7 @@ void    create_initial_vector(void)
     int32_t     fd;
     ssize_t     ret;
 
-    bzero(&buf[0], 8);
+    ft_bzero(&buf[0], 8);
     if ((fd = open("/dev/urandom", O_RDONLY)) == -1)
         fatal_error("random file opening");
     if ((ret = read(fd, buf, 8)) == -1)
@@ -40,9 +40,9 @@ void    get_operation_mode(char *input)
 {
     if (input[0] && input[0] == '-')
     {
-        if (input[1] && strncmp(&input[1], "ecb", 3) == 0)
+        if (input[1] && ft_strncmp(&input[1], "ecb", 3) == 0)
             args->mode = MODE_ECB;
-        else if (input[1] && strncmp(&input[1], "cbc", 3) == 0)
+        else if (input[1] && ft_strncmp(&input[1], "cbc", 3) == 0)
             args->mode = MODE_CBC;
     }
     if (args->mode == FALSE)

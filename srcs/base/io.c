@@ -5,12 +5,12 @@ void    process_string(char *input)
     t_data  *new_data;
 
     create_data(&new_data);
-    new_data->rc_size = strlen(input);
+    new_data->rc_size = ft_strlen(input);
     if (!(new_data->input = (char *)malloc(new_data->rc_size)))
         fatal_error("string input memory allocation");
-    bzero(new_data->input, new_data->rc_size);
+    ft_bzero(new_data->input, new_data->rc_size);
 
-    strncpy(new_data->input, input, new_data->rc_size);
+    ft_strncpy(new_data->input, input, new_data->rc_size);
     new_data->src_type = SRC_ARG;
 
     organize_data(new_data);

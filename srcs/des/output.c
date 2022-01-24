@@ -10,12 +10,12 @@ void    increment_output(t_args *args, t_message_des *msg, t_block *block, char 
 {
     u_int8_t    padding;
 
-    strncpy(&block->processed[0], &block->left[0], 32);
-    strncpy(&block->processed[32], &block->right[0], 32);
+    ft_strncpy(&block->processed[0], &block->left[0], 32);
+    ft_strncpy(&block->processed[32], &block->right[0], 32);
     permute(&block->processed[0], &block->permuted[0], &final_permutation[0], 64);
 
     if (args->mode == MODE_CBC)
-        strncpy(&msg->prev_block[0], &block->permuted[0], 64);
+        ft_strncpy(&msg->prev_block[0], &block->permuted[0], 64);
     
     for (u_int8_t bytes = 0; bytes < 8; bytes++)
     {

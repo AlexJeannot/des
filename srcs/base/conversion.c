@@ -81,7 +81,7 @@ void    hex_str_to_str(char *hex_str, char *str, u_int64_t hex_size)
 {
     char    tmp[hex_size * 4];
 
-    bzero(tmp, hex_size * 4);
+    ft_bzero(tmp, hex_size * 4);
     hex_str_to_bin_str(hex_str, tmp, hex_size);
     bin_str_to_str(tmp, str, hex_size * 4);
 }

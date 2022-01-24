@@ -2,7 +2,7 @@
 
 static void init_buffers(t_buffers *buffers)
 {
-    bzero(buffers, sizeof(t_buffers));
+    ft_bzero(buffers, sizeof(t_buffers));
 
     buffers->a = 0x6a09e667;
     buffers->b = 0xbb67ae85;
