@@ -66,7 +66,7 @@ void        format_encoded_msg(t_message_base64 *msg)
     msg->fc_size = msg->rc_size - nl_size;
 
     if (!(msg->fmt_content = (char *)malloc(msg->fc_size)))
-        fatal_error("formated content memory allocation"); //TODO
+        fatal_error("formated content memory allocation");
 
     count_fmt = 0;
     for (u_int64_t count = 0; count < msg->rc_size; count++)

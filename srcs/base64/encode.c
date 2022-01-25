@@ -55,13 +55,14 @@ u_int8_t    get_fourth_char(t_block *block)
 
 void        format_decoded_msg(t_message_base64 *msg)
 {
-    msg->fc_size = (!(msg->rc_size % 3)) ? msg->rc_size : msg->rc_size + (3 - (msg->rc_size % 3));
+    msg->pad_size = (!(msg->rc_size % 3)) ? 0 : 3 - (msg->rc_size % 3);
+    msg->fc_size = msg->rc_size + msg->pad_size;
 
     if (msg->rc_size == msg->fc_size)
         msg->fmt_content = msg->raw_content;
     else {
         if (!(msg->fmt_content = (char *)malloc(msg->fc_size)))
-            fatal_error("formated content memory allocation"); //TODO
+            fatal_error("formated content memory allocation");
         
         bzero(msg->fmt_content, msg->fc_size);
         memcpy(msg->fmt_content, msg->raw_content, msg->rc_size);
@@ -74,7 +75,7 @@ void        prepare_encoded_output(t_message_base64 *msg)
     msg->blocks_size = msg->fc_size / 3;
 
     if (!(msg->pc_content = (char *)malloc(msg->pc_size + 1)))
-        fatal_error("processed content memory allocation"); //TODO
+        fatal_error("processed content memory allocation");
     bzero(msg->pc_content, (msg->pc_size + 1));
 }
 
@@ -89,12 +90,12 @@ void        encode_msg_base64(t_message_base64 *msg)
         add_encoded_char(msg, get_first_char(block));
         add_encoded_char(msg, get_second_char(block));
         if (is_last_block(msg->blocks_size, count)) {
-            if (!get_third_char(block))
+            if (msg->pad_size == 2)
                 add_complement(msg);
             else
                 add_encoded_char(msg, get_third_char(block));
 
-            if (!get_fourth_char(block))
+            if (msg->pad_size == 2 > 0)
                 add_complement(msg);
             else
                 add_encoded_char(msg, get_fourth_char(block));
@@ -115,10 +116,10 @@ void        write_encoded(t_message_base64 *msg, t_args *args)
     for (; count < msg->pc_size; count++)
     {
         write(args->output_fd, &msg->pc_content[count], 1);
-        if (args->n == TRUE && count != 0 && (count + 1) % 64 == 0)
+        if (args->n == TRUE && count != 0 && (count + 1) % 76 == 0)
             write(args->output_fd, "\n", 1);
     }
-    if (args->n == FALSE || (count + 1) % 64 != 0)
+    if (args->n == FALSE || count % 76 != 0)
         write(args->output_fd, "\n", 1);
 }
 
