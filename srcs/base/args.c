@@ -71,7 +71,7 @@ void        format_args(void)
     if (!(args->process_type))
         args->process_type = EN;
 
-    if (!is_hash_algorithm() && args->k == FALSE)
+    if (args->algorithm == ALGO_DES && args->k == FALSE)
     {
         if (args->p == FALSE)
             ask_password();
@@ -80,7 +80,7 @@ void        format_args(void)
         pbkdf2(8, 32, 310000);
     }
 
-    if (args->mode == MODE_CBC && args->v == FALSE)
+    if (args->algorithm == ALGO_DES && args->mode == MODE_CBC && args->v == FALSE)
         create_initial_vector();
 
     if (is_stdin_process())
