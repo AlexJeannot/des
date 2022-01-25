@@ -15,6 +15,8 @@ RESET="\033[0m"
 
 cd ..
 make
+mv ft_ssl test/
+cd test
 
 ################ FUNCTIONS ################
 
@@ -27,21 +29,9 @@ test_hash ()
     elif [[ "$1" == "sha256" ]]
     then
         echo -e "############    SHA256 ALGORITHM    ############"
-    elif [[ "$1" == "base64" ]]
-    then
-        echo -e "############    BASE64 ALGORITHM    ############"
-    elif [[ "$1" == "des-ecb" ]]
-    then
-        echo -e "###########    DES-ECB ALGORITHM    ############"
-    elif [[ "$1" == "des-cbc" ]]
-    then
-        echo -e "###########    DES-CBC ALGORITHM    ############"
     fi
     echo -e "################################################$RESET\n"
 
-    echo -e "$ORANGE################################################"
-    echo -e "#######    TEST MULTIPLE STDIN INPUTS    #######"
-    echo -e "################################################$RESET\n"
     for nb_bytes in {0..2048}
     do
         let "step = $nb_bytes % 100"
@@ -105,7 +95,7 @@ test_base64 ()
     echo ""
 }
 
-test_des()
+test_des_ecb()
 {
     echo -e "$RED################################################"
     echo -e "############    DES-ECB ALGORITHM    ###########"
@@ -143,8 +133,10 @@ test_des()
     done
     echo "2048 / 2048"
     echo ""
+}
 
-
+test_des_cbc()
+{
     echo -e "$RED################################################"
     echo -e "############    DES-CBC ALGORITHM    ###########"
     echo -e "################################################$RESET\n"
@@ -182,17 +174,27 @@ test_des()
     echo "2048 / 2048"
     echo ""
 }
-#test_hash "md5"
-#test_hash "sha256"
-# test_base64
-test_des
 
-################ CLEAN ################
+clean()
+{
+    rm file
+    rm *.txt
+}
+
+test_hash "md5"
+clean
+test_hash "sha256"
+clean
+test_base64
+clean
+test_des_ecb
+clean
+test_des_cbc
+clean
+
+################ FINAL CLEAN ################
 
 echo ""
-# make fclean
-# rm file
-# 14 octects
-# 4 pleins
-# padding de 8 bits
-# 
+rm ft_ssl
+cd ..
+make fclean

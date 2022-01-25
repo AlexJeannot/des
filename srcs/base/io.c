@@ -21,9 +21,7 @@ void    process_stdin(void)
     t_data  *new_data;
 
     create_data(&new_data);
-    write(1, "Enter your input: ", 18);
     get_file_content(new_data, STDIN_FILENO);
-    write(1, "\n", 1);
     new_data->src_type = SRC_STDIN;
 
     new_data->next = data;

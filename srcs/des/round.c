@@ -8,10 +8,16 @@ void    prepare_rounds(t_message_des *msg, t_block *block, u_int64_t block_index
         str_to_bin_str("", &block->raw[0], msg->rc_size, 8);
     else
         str_to_bin_str(&msg->raw_content[block_index * 8], &block->raw[0], msg->rc_size, 8);
-    msg->rc_size -= 8;
 
-    if (args->mode == MODE_CBC)
-        xor_plaintext(msg, block, block_index);
+    if (args->process_type == ENCRYPTION && args->mode == MODE_CBC)
+        xor_plaintext(&block->raw[0], &msg->prev_block[0], block_index);
+    else if (args->process_type == DECRYPTION && args->mode == MODE_CBC)
+    {
+        strncpy(&msg->prev_block[0], &msg->current_block[0], 64);
+        strncpy(&msg->current_block[0], &block->raw[0], 64);
+    }
+
+    msg->rc_size -= 8;
 
     permute(&block->raw[0], &block->permuted[0], &initial_permutation[0], 64);
     strncpy(&block->left[0], &block->permuted[0], 32);

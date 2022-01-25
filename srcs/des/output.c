@@ -14,9 +14,11 @@ void    increment_output(t_args *args, t_message_des *msg, t_block *block, char 
     strncpy(&block->processed[32], &block->right[0], 32);
     permute(&block->processed[0], &block->permuted[0], &final_permutation[0], 64);
 
-    if (args->mode == MODE_CBC)
+    if (args->process_type == ENCRYPTION && args->mode == MODE_CBC)
         strncpy(&msg->prev_block[0], &block->permuted[0], 64);
-    
+    else if (args->process_type == DECRYPTION && args->mode == MODE_CBC)
+        xor_plaintext(&block->permuted[0], &msg->prev_block[0], block_index);
+
     for (u_int8_t bytes = 0; bytes < 8; bytes++)
     {
         for (u_int8_t bits = 0; bits < 8; bits++)

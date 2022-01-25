@@ -105,6 +105,7 @@ typedef struct  s_message_des
     u_int64_t   block_number;
     u_int8_t    is_last_block_empty;
     char        prev_block[64];
+    char        current_block[64];
 }               t_message_des;
 
 typedef struct  s_message_base64

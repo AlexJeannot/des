@@ -63,6 +63,6 @@ void    execute_round(t_block *block, t_keys *keys, u_int8_t round);
 /*
 **  IN OTHERS DIRECTORIES
 */
-void    xor_plaintext(t_message_des *msg, t_block *block, u_int64_t block_index);
+void    xor_plaintext(char *input, char *cmp, u_int64_t block_index);
 
 #endif

@@ -49,9 +49,16 @@ void    get_operation_mode(char *input)
         args_error("wrong operation mode provided", input);
 }
 
-void    xor_plaintext(t_message_des *msg, t_block *block, u_int64_t block_index)
+void    xor_plaintext(char *input, char *cmp, u_int64_t block_index)
 {
+    char first_xor[64];
+
+    bzero(first_xor, 64);
     if (block_index == 0)
-        hex_str_to_bin_str(args->iv, &msg->prev_block[0], 16);
-    xor_bits_string(&block->raw[0], &msg->prev_block[0], &block->raw[0], 64);
+    {
+        hex_str_to_bin_str(args->iv, &first_xor[0], 16);
+        xor_bits_string(input, &first_xor[0], input, 64);
+    }
+    else
+        xor_bits_string(input, cmp, input, 64);
 }
