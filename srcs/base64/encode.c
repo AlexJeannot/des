@@ -95,7 +95,7 @@ void        encode_msg_base64(t_message_base64 *msg)
             else
                 add_encoded_char(msg, get_third_char(block));
 
-            if (msg->pad_size == 2 > 0)
+            if (msg->pad_size > 0)
                 add_complement(msg);
             else
                 add_encoded_char(msg, get_fourth_char(block));

@@ -6,7 +6,7 @@ void    prepare_output(t_message_des *msg)
         fatal_error("processed content memory allocation");
 }
 
-void    increment_output(t_args *args, t_message_des *msg, t_block *block, char *output, u_int8_t is_last_block)
+void    increment_output(t_args *args, t_message_des *msg, t_block *block, char *output, u_int64_t block_index)
 {
     u_int8_t    padding;
 
@@ -26,7 +26,7 @@ void    increment_output(t_args *args, t_message_des *msg, t_block *block, char 
         }
     }
 
-    padding = (is_last_block && args->process_type == DECRYPTION) ? is_block_padded(output) : 0;
+    padding = (is_last_block(msg->block_number, block_index) && args->process_type == DECRYPTION) ? is_block_padded(output) : 0;
     msg->pc_size += (8 - padding);
 }
 
