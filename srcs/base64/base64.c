@@ -4,7 +4,6 @@ static void retrieve_data(t_data *data, t_message_base64 *msg)
 {
     msg->raw_content = data->input;
     msg->rc_size = data->rc_size;
-    args->output_fd = args->output_fd;
 }
 
 static void clean_msg(t_message_base64 *msg)

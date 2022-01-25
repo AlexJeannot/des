@@ -12,13 +12,16 @@ void        allocate_args(void)
     if (!(args = (t_args *)malloc(sizeof(t_args))))
         fatal_error("argument structure memory allocation");
     bzero(args, sizeof(t_args));
+
+    args->output_fd = STDOUT_FILENO;
 }
 
 void        clean_args(void)
 {
     if (args)
         free(args);
-    close(args->output_fd);
+    if (args->output_fd > 1)
+        close(args->output_fd);
 }
 
 void        get_algorithm(char *input)

@@ -10,8 +10,7 @@ static void retrieve_data(t_message_des *msg, t_keys *keys)
         msg->rc_size = data->rc_size;
     }
     strncpy(keys->origin_key, args->key, 16);
-    args->output_fd = args->output_fd;
-
+    
     if (args->process_type == ENCRYPTION)
     {
         msg->block_number = (msg->rc_size / 8) + 1;
